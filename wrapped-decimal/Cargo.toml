@@ -1,0 +1,14 @@
+[package]
+name = "wrapped-decimal"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+anchor = ["dep:anchor-lang"]
+idl-build = ["anchor", "anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { workspace = true, optional = true }
+bytemuck = { workspace = true }
+rust_decimal = { workspace = true }

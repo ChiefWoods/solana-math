@@ -1,0 +1,20 @@
+[package]
+name = "solana-math"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+members = [
+    "basis-points",
+    "safe-math",
+    "wrapped-decimal",
+]
+resolver = "2"
+
+[workspace.dependencies]
+anchor-lang = { version = "1.0.1" }
+bytemuck = { version = "1.20.0", features = ["derive", "min_const_generics"] }
+rust_decimal = { version = "1.41.0" }
+thiserror = { version = "2.0.18" }
+
+[dependencies]

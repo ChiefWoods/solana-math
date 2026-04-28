@@ -1,0 +1,22 @@
+[package]
+name = "safe-math"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["u8", "u16", "u32", "u64", "u128", "i8", "i16", "i32", "i64", "i128"]
+u8 = []
+u16 = []
+u32 = []
+u64 = []
+u128 = []
+i8 = []
+i16 = []
+i32 = []
+i64 = []
+i128 = []
+decimal = ["dep:rust_decimal"]
+
+[dependencies]
+rust_decimal = { workspace = true, optional = true }
+thiserror = { workspace = true }
