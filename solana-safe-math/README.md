@@ -1,0 +1,34 @@
+# solana-safe-math
+
+Checked math and numeric conversion traits that return explicit errors instead of panicking.
+
+## What it provides
+
+- `SafeMath`: checked `add/sub/mul/div`
+- `SafeMathAssign`: checked `*_assign` helpers
+- `SafeConvert`: checked integer conversions
+- `SafeMathError` with `Overflow`, `Underflow`, and `ConversionFailed`
+
+## Install
+
+```bash
+cargo add solana-safe-math
+```
+
+## Features
+
+Numeric trait impls are gated by features:
+
+- Unsigned: `u8`, `u16`, `u32`, `u64`, `u128`
+- Signed: `i8`, `i16`, `i32`, `i64`, `i128`
+- `decimal`: enable `rust_decimal::Decimal` support
+
+## Example
+
+```rust
+use solana_safe_math::SafeMath;
+
+let x: u64 = 10;
+assert_eq!(x.safe_add(5)?, 15);
+# Ok::<(), solana_safe_math::SafeMathError>(())
+```
