@@ -3,7 +3,7 @@ use bytemuck::{Pod, Zeroable};
 use rust_decimal::Decimal;
 
 use crate::error::BasisPointsError;
-mod error;
+pub mod error;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Zeroable, Pod)]
 #[cfg_attr(
@@ -15,11 +15,16 @@ mod error;
     )
 )]
 #[repr(C)]
+/// A validated basis-points value in the inclusive range `0..=10_000`.
 pub struct BasisPoints(u16);
 
 impl BasisPoints {
+    /// The maximum valid basis-points value (`10000`, equal to 100%).
     pub const MAX: u16 = 10000;
 
+    /// Creates a new [`BasisPoints`] after validating the input range.
+    ///
+    /// Returns [`BasisPointsError::InvalidBasisPoints`] if `bps > 10_000`.
     pub fn new(bps: u16) -> Result<Self, BasisPointsError> {
         if bps > Self::MAX {
             return Err(BasisPointsError::InvalidBasisPoints);
