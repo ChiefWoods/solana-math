@@ -6,7 +6,7 @@ edition = "2024"
 [workspace]
 members = [
     "basis-points",
-    "safe-math",
+    "solana-safe-math",
     "wrapped-decimal",
 ]
 resolver = "2"
