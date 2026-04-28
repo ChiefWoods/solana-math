@@ -20,7 +20,7 @@ macro_rules! convert_impl {
                         caller.file(),
                         caller.line()
                     );
-                    SafeMathError::ArithmeticOverflow
+                    SafeMathError::Overflow
                 })
             }
 
@@ -34,7 +34,7 @@ macro_rules! convert_impl {
                         caller.file(),
                         caller.line()
                     );
-                    SafeMathError::ArithmeticOverflow
+                    SafeMathError::Overflow
                 })
             }
         }

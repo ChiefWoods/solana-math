@@ -20,7 +20,7 @@ macro_rules! math_impl {
                     None => {
                         let caller = Location::caller();
                         println!("Math overflow at {}:{}", caller.file(), caller.line());
-                        Err(SafeMathError::ArithmeticOverflow)
+                        Err(SafeMathError::Overflow)
                     }
                 }
             }
@@ -33,7 +33,7 @@ macro_rules! math_impl {
                     None => {
                         let caller = Location::caller();
                         println!("Math underflow at {}:{}", caller.file(), caller.line());
-                        Err(SafeMathError::ArithmeticOverflow)
+                        Err(SafeMathError::Underflow)
                     }
                 }
             }
@@ -46,7 +46,7 @@ macro_rules! math_impl {
                     None => {
                         let caller = Location::caller();
                         println!("Math overflow at {}:{}", caller.file(), caller.line());
-                        Err(SafeMathError::ArithmeticOverflow)
+                        Err(SafeMathError::Overflow)
                     }
                 }
             }
@@ -59,7 +59,7 @@ macro_rules! math_impl {
                     None => {
                         let caller = Location::caller();
                         println!("Division error at {}:{}", caller.file(), caller.line());
-                        Err(SafeMathError::ArithmeticOverflow)
+                        Err(SafeMathError::Overflow)
                     }
                 }
             }
