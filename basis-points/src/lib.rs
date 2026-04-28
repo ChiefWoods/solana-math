@@ -1,7 +1,8 @@
 //! `basis-points` provides a validated [`BasisPoints`] newtype for percentage-like
 //! values represented in basis points (`0..=10_000`).
 //!
-//! The crate includes integer conversions and optional [`rust_decimal::Decimal`]
+//! The crate includes integer conversions and optional
+//! [`rust_decimal::Decimal`](https://docs.rs/rust_decimal/latest/rust_decimal/struct.Decimal.html)
 //! conversions behind the `decimal` feature.
 
 use bytemuck::{Pod, Zeroable};
