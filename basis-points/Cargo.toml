@@ -2,6 +2,16 @@
 name = "basis-points"
 version = "0.1.0"
 edition = "2021"
+description = "Validated basis-points type with optional Decimal and Anchor support."
+license = "MIT"
+repository = "https://github.com/ChiefWoods/solana-math"
+homepage = "https://github.com/ChiefWoods/solana-math"
+documentation = "https://docs.rs/basis-points"
+readme = "README.md"
+keywords = ["solana", "math", "basis-points", "finance", "defi"]
+categories = ["cryptography::cryptocurrencies", "data-structures", "mathematics"]
+rust-version = "1.85"
+include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE*", "CHANGELOG.md"]
 
 [features]
 default = []
@@ -17,3 +27,6 @@ thiserror = { workspace = true }
 
 [dev-dependencies]
 cargo-husky = { workspace = true }
+
+[package.metadata.docs.rs]
+all-features = true
