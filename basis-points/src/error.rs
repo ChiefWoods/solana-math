@@ -1,3 +1,8 @@
+//! Error types for `basis-points`.
+//!
+//! This module defines [`BasisPointsError`], used when validation fails or when
+//! conversions cannot be performed safely.
+
 use thiserror::Error;
 
 /// Errors returned by `BasisPoints` validation and conversions.

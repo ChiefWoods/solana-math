@@ -1,3 +1,9 @@
+//! `wrapped-decimal` provides [`WrappedDecimal`], a fixed-size wrapper around
+//! [`rust_decimal::Decimal`] with a stable 16-byte representation.
+//!
+//! This is useful for Solana account/state layouts that require predictable,
+//! POD-safe binary encoding.
+
 use bytemuck::{Pod, Zeroable};
 use rust_decimal::Decimal;
 

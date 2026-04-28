@@ -1,6 +1,6 @@
 [package]
 name = "wrapped-decimal"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "POD-safe 16-byte wrapper for rust_decimal::Decimal."
 license = "MIT"

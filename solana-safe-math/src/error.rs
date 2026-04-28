@@ -1,3 +1,8 @@
+//! Error types for `solana-safe-math`.
+//!
+//! This module defines [`SafeMathError`], used by checked arithmetic and safe
+//! numeric conversion helpers.
+
 use thiserror::Error;
 
 /// Errors returned by safe arithmetic operations and numeric conversions.
