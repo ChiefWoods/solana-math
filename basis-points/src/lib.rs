@@ -88,4 +88,59 @@ mod tests {
             Err(BasisPointsError::InvalidBasisPoints)
         );
     }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_from_basis_points_to_decimal() {
+        let bps = BasisPoints::new(1234).unwrap();
+        let decimal: Decimal = bps.into();
+
+        assert_eq!(decimal, Decimal::new(1234, 0));
+    }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_try_from_decimal_to_basis_points() {
+        let decimal = Decimal::new(4321, 0);
+        let bps = BasisPoints::try_from(decimal);
+
+        assert_eq!(bps, Ok(BasisPoints(4321)));
+    }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_round_trip_basis_points_decimal_basis_points() {
+        let original = BasisPoints::new(9999).unwrap();
+        let decimal: Decimal = original.into();
+        let round_trip = BasisPoints::try_from(decimal);
+
+        assert_eq!(round_trip, Ok(original));
+    }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_try_from_decimal_fractional_truncates() {
+        let decimal = Decimal::new(12345, 1); // 1234.5
+        let bps = BasisPoints::try_from(decimal);
+
+        assert_eq!(bps, Ok(BasisPoints(1234)));
+    }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_try_from_decimal_above_basis_points_max_error() {
+        let decimal = Decimal::new(10001, 0);
+        let bps = BasisPoints::try_from(decimal);
+
+        assert_eq!(bps, Err(BasisPointsError::InvalidBasisPoints));
+    }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_try_from_decimal_u16_overflow_error() {
+        let decimal = Decimal::new(70000, 0);
+        let bps = BasisPoints::try_from(decimal);
+
+        assert_eq!(bps, Err(BasisPointsError::ConversionFailed));
+    }
 }
