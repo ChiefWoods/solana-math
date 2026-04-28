@@ -12,3 +12,6 @@ idl-build = ["anchor", "anchor-lang/idl-build"]
 anchor-lang = { workspace = true, optional = true }
 bytemuck = { workspace = true }
 rust_decimal = { workspace = true }
+
+[dev-dependencies]
+cargo-husky = { workspace = true }
