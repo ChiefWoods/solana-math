@@ -16,6 +16,8 @@ concurrency:
 
 jobs:
   tests:
+    env:
+      NO_HUSKY_HOOKS: 1
     name: Check, fmt, clippy and test
     runs-on: ubuntu-latest
 

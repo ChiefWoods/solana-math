@@ -1,6 +1,6 @@
 [package]
 name = "solana-safe-math"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Checked arithmetic and conversion traits for Solana-oriented Rust."
 license = "MIT"
@@ -32,7 +32,7 @@ rust_decimal = { workspace = true, optional = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]
-cargo-husky = { workspace = true }
+husky-rs = { workspace = true }
 
 [package.metadata.docs.rs]
 all-features = true
