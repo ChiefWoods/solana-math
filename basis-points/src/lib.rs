@@ -39,6 +39,38 @@ impl BasisPoints {
 
         Ok(Self(bps))
     }
+
+    /// Checked addition. Returns `None` if the result exceeds `10_000`.
+    pub fn checked_add(self, rhs: Self) -> Option<Self> {
+        let lhs = u16::from(self);
+        let rhs = u16::from(rhs);
+        let result = lhs.checked_add(rhs)?;
+        Self::new(result).ok()
+    }
+
+    /// Checked subtraction. Returns `None` if underflow occurs.
+    pub fn checked_sub(self, rhs: Self) -> Option<Self> {
+        let lhs = u16::from(self);
+        let rhs = u16::from(rhs);
+        let result = lhs.checked_sub(rhs)?;
+        Self::new(result).ok()
+    }
+
+    /// Checked multiplication. Returns `None` if the result exceeds `10_000`.
+    pub fn checked_mul(self, rhs: Self) -> Option<Self> {
+        let lhs = u16::from(self);
+        let rhs = u16::from(rhs);
+        let result = lhs.checked_mul(rhs)?;
+        Self::new(result).ok()
+    }
+
+    /// Checked division. Returns `None` on division-by-zero.
+    pub fn checked_div(self, rhs: Self) -> Option<Self> {
+        let lhs = u16::from(self);
+        let rhs = u16::from(rhs);
+        let result = lhs.checked_div(rhs)?;
+        Self::new(result).ok()
+    }
 }
 
 impl From<BasisPoints> for u16 {
@@ -99,6 +131,70 @@ mod tests {
             BasisPoints::new(10001),
             Err(BasisPointsError::InvalidBasisPoints)
         );
+    }
+
+    #[test]
+    fn test_checked_add() {
+        let lhs = BasisPoints::new(2500).unwrap();
+        let rhs = BasisPoints::new(2500).unwrap();
+
+        assert_eq!(lhs.checked_add(rhs), BasisPoints::new(5000).ok());
+    }
+
+    #[test]
+    fn test_checked_add_overflow() {
+        let lhs = BasisPoints::new(9000).unwrap();
+        let rhs = BasisPoints::new(2000).unwrap();
+
+        assert_eq!(lhs.checked_add(rhs), None);
+    }
+
+    #[test]
+    fn test_checked_sub() {
+        let lhs = BasisPoints::new(2500).unwrap();
+        let rhs = BasisPoints::new(500).unwrap();
+
+        assert_eq!(lhs.checked_sub(rhs), BasisPoints::new(2000).ok());
+    }
+
+    #[test]
+    fn test_checked_sub_underflow() {
+        let lhs = BasisPoints::new(500).unwrap();
+        let rhs = BasisPoints::new(2500).unwrap();
+
+        assert_eq!(lhs.checked_sub(rhs), None);
+    }
+
+    #[test]
+    fn test_checked_mul() {
+        let lhs = BasisPoints::new(100).unwrap();
+        let rhs = BasisPoints::new(50).unwrap();
+
+        assert_eq!(lhs.checked_mul(rhs), BasisPoints::new(5000).ok());
+    }
+
+    #[test]
+    fn test_checked_mul_overflow() {
+        let lhs = BasisPoints::new(200).unwrap();
+        let rhs = BasisPoints::new(100).unwrap();
+
+        assert_eq!(lhs.checked_mul(rhs), None);
+    }
+
+    #[test]
+    fn test_checked_div() {
+        let lhs = BasisPoints::new(5000).unwrap();
+        let rhs = BasisPoints::new(100).unwrap();
+
+        assert_eq!(lhs.checked_div(rhs), BasisPoints::new(50).ok());
+    }
+
+    #[test]
+    fn test_checked_div_by_zero() {
+        let lhs = BasisPoints::new(5000).unwrap();
+        let rhs = BasisPoints::new(0).unwrap();
+
+        assert_eq!(lhs.checked_div(rhs), None);
     }
 
     #[cfg(feature = "decimal")]

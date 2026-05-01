@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3
+- Added checked arithmetic helpers: `checked_add`, `checked_sub`, `checked_mul`, and `checked_div`.
+
 ## 0.1.2
 - Added top-level crate and error module documentation comments.
 
