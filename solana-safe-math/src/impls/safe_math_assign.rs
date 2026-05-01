@@ -63,3 +63,5 @@ math_assign_impl!(i64);
 math_assign_impl!(i128);
 #[cfg(feature = "decimal")]
 math_assign_impl!(rust_decimal::Decimal);
+#[cfg(feature = "basis-points")]
+math_assign_impl!(basis_points::BasisPoints);

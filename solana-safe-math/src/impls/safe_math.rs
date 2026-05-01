@@ -89,3 +89,5 @@ math_impl!(i64);
 math_impl!(i128);
 #[cfg(feature = "decimal")]
 math_impl!(rust_decimal::Decimal);
+#[cfg(feature = "basis-points")]
+math_impl!(basis_points::BasisPoints);

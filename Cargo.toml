@@ -13,6 +13,7 @@ resolver = "2"
 
 [workspace.dependencies]
 anchor-lang = { version = "1.0.1" }
+basis-points = { path = "basis-points" }
 bytemuck = { version = "1.20.0", features = ["derive", "min_const_generics"] }
 rust_decimal = { version = "1.41.0", features = ["maths"] }
 thiserror = { version = "2.0.18" }

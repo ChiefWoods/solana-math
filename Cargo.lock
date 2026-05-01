@@ -1375,6 +1375,7 @@ dependencies = [
 name = "solana-safe-math"
 version = "0.1.2"
 dependencies = [
+ "basis-points",
  "husky-rs",
  "rust_decimal",
  "thiserror 2.0.18",
