@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+- **Breaking:** `From<BasisPoints> for Decimal` now returns a proportional rate in `0..=1` (divides by `10_000`) instead of the raw basis-points count.
+- **Breaking:** `TryFrom<Decimal> for BasisPoints` now expects a proportional rate and multiplies by `10_000` before validation.
+
 ## 0.1.3
 - Added checked arithmetic helpers: `checked_add`, `checked_sub`, `checked_mul`, and `checked_div`.
 

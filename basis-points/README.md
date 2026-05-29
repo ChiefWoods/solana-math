@@ -6,7 +6,7 @@ A small, validated basis-points type for Solana-oriented Rust code.
 
 - `BasisPoints` newtype with enforced range `0..=10_000`
 - Conversions to integer types (`u16`, `u32`, `u64`, `u128`)
-- Optional conversion support with `rust_decimal`
+- Optional `rust_decimal` conversions (`BasisPoints` ↔ proportional rate in `0..=1`)
 - Optional Anchor derives via feature flags
 
 ## Install

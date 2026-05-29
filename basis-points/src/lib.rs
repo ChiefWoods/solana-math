@@ -3,7 +3,9 @@
 //!
 //! The crate includes integer conversions and optional
 //! [`rust_decimal::Decimal`](https://docs.rs/rust_decimal/latest/rust_decimal/struct.Decimal.html)
-//! conversions behind the `decimal` feature.
+//! conversions behind the `decimal` feature. With `decimal` enabled,
+//! [`BasisPoints`] converts to [`Decimal`] as a unit fraction in `0..=1`
+//! (for example, `2500` bps becomes `0.25`).
 
 use bytemuck::{Pod, Zeroable};
 #[cfg(feature = "decimal")]
@@ -99,8 +101,9 @@ impl From<BasisPoints> for u128 {
 
 #[cfg(feature = "decimal")]
 impl From<BasisPoints> for Decimal {
+    /// Converts basis points to a proportional rate in `0..=1` (divide by `10_000`).
     fn from(bps: BasisPoints) -> Self {
-        Decimal::from(bps.0)
+        Decimal::from(bps.0) / Decimal::from(BasisPoints::MAX)
     }
 }
 
@@ -108,8 +111,11 @@ impl From<BasisPoints> for Decimal {
 impl TryFrom<Decimal> for BasisPoints {
     type Error = BasisPointsError;
 
+    /// Converts a proportional rate in `0..=1` to basis points (multiply by `10_000`).
+    ///
+    /// Fractional results truncate toward zero when casting to `u16`.
     fn try_from(decimal: Decimal) -> Result<Self, Self::Error> {
-        let bps = decimal
+        let bps = (decimal * Decimal::from(BasisPoints::MAX))
             .try_into()
             .map_err(|_| BasisPointsError::ConversionFailed)?;
         BasisPoints::new(bps)
@@ -203,13 +209,22 @@ mod tests {
         let bps = BasisPoints::new(1234).unwrap();
         let decimal: Decimal = bps.into();
 
-        assert_eq!(decimal, Decimal::new(1234, 0));
+        assert_eq!(decimal, Decimal::new(1234, 4));
+    }
+
+    #[cfg(feature = "decimal")]
+    #[test]
+    fn test_from_basis_points_max_to_decimal_one() {
+        let bps = BasisPoints::new(BasisPoints::MAX).unwrap();
+        let decimal: Decimal = bps.into();
+
+        assert_eq!(decimal, Decimal::ONE);
     }
 
     #[cfg(feature = "decimal")]
     #[test]
     fn test_try_from_decimal_to_basis_points() {
-        let decimal = Decimal::new(4321, 0);
+        let decimal = Decimal::new(4321, 4);
         let bps = BasisPoints::try_from(decimal);
 
         assert_eq!(bps, Ok(BasisPoints(4321)));
@@ -228,7 +243,7 @@ mod tests {
     #[cfg(feature = "decimal")]
     #[test]
     fn test_try_from_decimal_fractional_truncates() {
-        let decimal = Decimal::new(12345, 1); // 1234.5
+        let decimal = Decimal::new(12345, 5); // 0.12345
         let bps = BasisPoints::try_from(decimal);
 
         assert_eq!(bps, Ok(BasisPoints(1234)));
@@ -237,7 +252,7 @@ mod tests {
     #[cfg(feature = "decimal")]
     #[test]
     fn test_try_from_decimal_above_basis_points_max_error() {
-        let decimal = Decimal::new(10001, 0);
+        let decimal = Decimal::new(10001, 4); // 1.0001
         let bps = BasisPoints::try_from(decimal);
 
         assert_eq!(bps, Err(BasisPointsError::InvalidBasisPoints));
@@ -246,7 +261,7 @@ mod tests {
     #[cfg(feature = "decimal")]
     #[test]
     fn test_try_from_decimal_u16_overflow_error() {
-        let decimal = Decimal::new(70000, 0);
+        let decimal = Decimal::new(7, 0); // 700% when scaled
         let bps = BasisPoints::try_from(decimal);
 
         assert_eq!(bps, Err(BasisPointsError::ConversionFailed));
