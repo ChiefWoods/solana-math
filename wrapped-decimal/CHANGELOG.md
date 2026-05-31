@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3
+- Added `Debug`, `PartialEq`, and `Eq` derives to `WrappedDecimal`.
+
 ## 0.1.2
 - Added top-level crate documentation comments.
 

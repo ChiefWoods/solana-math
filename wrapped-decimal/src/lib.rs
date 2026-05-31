@@ -7,7 +7,7 @@
 use bytemuck::{Pod, Zeroable};
 use rust_decimal::Decimal;
 
-#[derive(Clone, Copy, Zeroable, Pod)]
+#[derive(Clone, Copy, Zeroable, Pod, Debug, PartialEq, Eq)]
 #[cfg_attr(
     feature = "anchor",
     derive(
