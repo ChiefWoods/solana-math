@@ -8,6 +8,8 @@
 //! (for example, `2500` bps becomes `0.25`).
 
 use bytemuck::{Pod, Zeroable};
+#[cfg(feature = "codama")]
+use codama::CodamaType;
 #[cfg(feature = "decimal")]
 use rust_decimal::Decimal;
 
@@ -23,6 +25,7 @@ pub mod error;
         anchor_lang::prelude::AnchorDeserialize
     )
 )]
+#[cfg_attr(feature = "codama", derive(CodamaType))]
 #[repr(C)]
 /// A validated basis-points value in the inclusive range `0..=10_000`.
 pub struct BasisPoints(u16);

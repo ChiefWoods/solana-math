@@ -1,6 +1,6 @@
 [package]
 name = "basis-points"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 description = "Validated basis-points type with optional Decimal and Anchor support."
 license = "MIT"
@@ -16,12 +16,14 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE*", "CHANGELOG.md"]
 [features]
 default = []
 anchor = ["dep:anchor-lang"]
+codama = ["dep:codama"]
 decimal = ["dep:rust_decimal"]
 idl-build = ["anchor", "anchor-lang/idl-build"]
 
 [dependencies]
 anchor-lang = { workspace = true, optional = true }
 bytemuck = { workspace = true }
+codama = { workspace = true, optional = true }
 rust_decimal = { workspace = true, optional = true }
 thiserror = { workspace = true }
 
