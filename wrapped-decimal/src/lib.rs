@@ -5,6 +5,8 @@
 //! POD-safe binary encoding.
 
 use bytemuck::{Pod, Zeroable};
+#[cfg(feature = "codama")]
+use codama::CodamaType;
 use rust_decimal::Decimal;
 
 #[derive(Clone, Copy, Zeroable, Pod, Debug, PartialEq, Eq)]
@@ -16,6 +18,7 @@ use rust_decimal::Decimal;
         anchor_lang::prelude::AnchorDeserialize
     )
 )]
+#[cfg_attr(feature = "codama", derive(CodamaType))]
 #[repr(C)]
 /// A fixed-size, POD-safe wrapper around [`rust_decimal::Decimal`].
 ///

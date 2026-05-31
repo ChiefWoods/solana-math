@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4
+- Added optional `codama` feature with `CodamaType` derive support for `WrappedDecimal`.
+
 ## 0.1.3
 - Added `Debug`, `PartialEq`, and `Eq` derives to `WrappedDecimal`.
 
