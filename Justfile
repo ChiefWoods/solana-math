@@ -41,6 +41,10 @@ release-dry-run crate level:
 release crate level:
     ./scripts/publish.sh {{crate}} {{level}}
 
+# Publish every crate whose CHANGELOG version is ahead of Cargo.toml.
+release-pending:
+    ./scripts/publish-pending.sh
+
 # Generate GitHub-style release notes for a crate between two tags.
 # Usage: `just release-notes basis-points basis-points@v0.3.0 basis-points@v0.3.1`
 release-notes crate from_tag to_tag:
