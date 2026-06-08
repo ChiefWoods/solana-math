@@ -5,7 +5,8 @@
 #   [{"crate":"basis-points","name":"basis-points","version":"0.3.2"}, ...]
 set -euo pipefail
 
-crates=(basis-points wrapped-decimal solana-safe-math)
+crates=(basis-points wrapped-decimal)
+# solana-safe-math is excluded, crate name taken by unknown publisher
 entries=()
 
 for crate in "${crates[@]}"; do

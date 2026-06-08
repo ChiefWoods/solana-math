@@ -37,7 +37,8 @@ release-dry-run crate level:
 # Bump version, tag, push, and publish one crate locally.
 # Usage: `just release basis-points patch`
 # Exact version: `VERSION=0.4.0 just release basis-points version`
-# Full-release order: basis-points → wrapped-decimal → solana-safe-math
+# Full-release order (automated): basis-points → wrapped-decimal
+# solana-safe-math is excluded, crate name taken by unknown publisher
 release crate level:
     ./scripts/publish.sh {{crate}} {{level}}
 

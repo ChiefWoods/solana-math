@@ -62,7 +62,8 @@ Dependency order when releasing multiple crates in one cycle:
 
 1. `basis-points`
 2. `wrapped-decimal`
-3. `solana-safe-math`
+
+`solana-safe-math` is excluded, crate name taken by unknown publisher.
 
 Before publishing, confirm:
 

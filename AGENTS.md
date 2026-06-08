@@ -78,9 +78,9 @@ Publishing is **not** done by agents unless the user explicitly asks.
 | `just release <crate-dir> <level>` | Local publish (needs `cargo-release`) |
 | `just publish <crate-name>` | crates.io only, no version bump |
 
-Release order when multiple crates ship: `basis-points` → `wrapped-decimal` → `solana-safe-math`.
+Release order when multiple crates ship: `basis-points` → `wrapped-decimal`. `solana-safe-math` is excluded, crate name taken by unknown publisher.
 
-The Publish workflow runs automatically after **Tests** succeeds on a `main` push when a crate's top `CHANGELOG.md` version is ahead of its `Cargo.toml` version (dependency order: `basis-points` → `wrapped-decimal` → `solana-safe-math`). Manual runs via **workflow_dispatch** are still supported.
+The Publish workflow runs automatically after **Tests** succeeds on a `main` push when a crate's top `CHANGELOG.md` version is ahead of its `Cargo.toml` version (`basis-points` and `wrapped-decimal` only). Manual runs via **workflow_dispatch** are still supported.
 
 The Publish workflow requires:
 

@@ -11,7 +11,7 @@ on:
         options:
           - basis-points
           - wrapped-decimal
-          - solana-safe-math
+          # solana-safe-math is excluded, crate name taken by unknown publisher
       level:
         description: Version bump level
         required: true
