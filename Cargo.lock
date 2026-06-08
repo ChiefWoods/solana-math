@@ -2047,7 +2047,7 @@ dependencies = [
 
 [[package]]
 name = "wrapped-decimal"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anchor-lang",
  "bytemuck",
