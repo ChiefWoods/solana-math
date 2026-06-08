@@ -91,6 +91,7 @@ jobs:
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable

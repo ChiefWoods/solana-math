@@ -13,6 +13,28 @@ fi
 
 create_release="${CREATE_RELEASE:-true}"
 
+resolve_cliff_range() {
+  local name=$1 old_tag=$2 new_tag=$3
+
+  git fetch origin --tags --force
+
+  if git rev-parse -q --verify "refs/tags/${old_tag}" >/dev/null; then
+    echo "${old_tag}..${new_tag}"
+    return
+  fi
+
+  local prev_tag
+  prev_tag=$(git tag -l "${name}@v*" --sort=-v:refname | grep -Fv "${new_tag}" | head -1 || true)
+  if [[ -n "$prev_tag" ]] && git rev-parse -q --verify "refs/tags/${prev_tag}" >/dev/null; then
+    echo "Previous tag ${old_tag} not found; using ${prev_tag}..${new_tag}" >&2
+    echo "${prev_tag}..${new_tag}"
+    return
+  fi
+
+  echo "No previous tag found for ${name}; using ${new_tag}" >&2
+  echo "${new_tag}"
+}
+
 mapfile -t items < <(echo "$pending" | jq -c '.[]')
 
 for item in "${items[@]}"; do
@@ -28,7 +50,8 @@ for item in "${items[@]}"; do
   VERSION="$version" "./scripts/publish.sh" "$crate" version
 
   if [[ "$create_release" == "true" ]]; then
-    git cliff "${old_tag}..${new_tag}" \
+    cliff_range=$(resolve_cliff_range "$name" "$old_tag" "$new_tag")
+    git cliff "$cliff_range" \
       --config .github/cliff.toml \
       --include-path "${crate}/**" \
       -o RELEASE_NOTES.md
