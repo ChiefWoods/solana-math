@@ -38,8 +38,42 @@ if [[ "$(git rev-parse --abbrev-ref HEAD)" == "HEAD" ]]; then
   git checkout -B main
 fi
 
+working_tree_clean() {
+  git diff --quiet && git diff --cached --quiet && [[ -z "$(git ls-files --others --exclude-standard)" ]]
+}
+
+restore_release_stash() {
+  if [[ "${PUBLISH_STASHED:-}" == "1" ]]; then
+    git stash pop
+    unset PUBLISH_STASHED
+  fi
+}
+
+maybe_stash_for_release() {
+  if working_tree_clean; then
+    return 0
+  fi
+
+  if [[ "${AUTO_STASH:-}" != "1" ]]; then
+    echo "error: uncommitted changes detected; commit or stash them, or set AUTO_STASH=1" >&2
+    git status --short >&2
+    exit 1
+  fi
+
+  echo "Stashing uncommitted changes before release..." >&2
+  git stash push --include-untracked -m "publish: pre-release stash"
+  export PUBLISH_STASHED=1
+  trap restore_release_stash EXIT
+}
+
+maybe_stash_for_release
+
 if $dry_run; then
-  cargo release "$level" --manifest-path "$manifest" --dry-run
+  cargo release "$level" \
+    --manifest-path "$manifest" \
+    --dry-run
+  restore_release_stash
+  trap - EXIT
   exit 0
 fi
 
@@ -53,6 +87,9 @@ cargo release "$level" \
 new_version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
 
 cargo publish -p "$name" --locked
+
+restore_release_stash
+trap - EXIT
 
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   {
