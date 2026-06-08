@@ -80,10 +80,12 @@ Publishing is **not** done by agents unless the user explicitly asks.
 
 Release order when multiple crates ship: `basis-points` → `wrapped-decimal` → `solana-safe-math`.
 
+The Publish workflow runs automatically after **Tests** succeeds on a `main` push when a crate's top `CHANGELOG.md` version is ahead of its `Cargo.toml` version (dependency order: `basis-points` → `wrapped-decimal` → `solana-safe-math`). Manual runs via **workflow_dispatch** are still supported.
+
 The Publish workflow requires:
 
 - Branch `main`
-- **Tests** workflow succeeded on the current commit
+- **Tests** workflow succeeded on the current commit (checked on manual runs; automatic runs are triggered by Tests success)
 - `CARGO_REGISTRY_TOKEN` in the `release` environment
 
 Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).

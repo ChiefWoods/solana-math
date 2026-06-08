@@ -67,7 +67,9 @@ Dependency order when releasing multiple crates in one cycle:
 Before publishing, confirm:
 
 - The crate's `CHANGELOG.md` has a section for the version being released.
-- `Cargo.toml` `version` matches that section header (the publish script bumps version automatically; the changelog entry should describe what that release contains).
+- `Cargo.toml` `version` is still the **previous** release (the top changelog header is the target version). After Tests pass on `main`, the Publish workflow auto-releases any crate whose changelog version is ahead of `Cargo.toml`.
+
+At release time, `Cargo.toml` `version` must match the section header being shipped (the publish script bumps it to that version).
 
 GitHub release notes are generated from git commits between tags. Crate `CHANGELOG.md` entries should still be written in plain language for docs.rs and crates.io readers — do not assume they will read GitHub Releases.
 
