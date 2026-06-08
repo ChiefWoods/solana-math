@@ -3,8 +3,26 @@ name: Tests
 on:
   pull_request:
     branches: [main]
+    paths:
+      - Cargo.toml
+      - Cargo.lock
+      - basis-points/Cargo.toml
+      - basis-points/src/**
+      - wrapped-decimal/Cargo.toml
+      - wrapped-decimal/src/**
+      - solana-safe-math/Cargo.toml
+      - solana-safe-math/src/**
   push:
     branches: [main]
+    paths:
+      - Cargo.toml
+      - Cargo.lock
+      - basis-points/Cargo.toml
+      - basis-points/src/**
+      - wrapped-decimal/Cargo.toml
+      - wrapped-decimal/src/**
+      - solana-safe-math/Cargo.toml
+      - solana-safe-math/src/**
   workflow_dispatch:
 
 permissions:
