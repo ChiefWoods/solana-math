@@ -11,6 +11,7 @@ readme = "README.md"
 keywords = ["solana", "math", "checked", "overflow"]
 categories = ["cryptography::cryptocurrencies", "mathematics"]
 rust-version = "1.85"
+publish = false
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE*", "CHANGELOG.md"]
 
 [features]

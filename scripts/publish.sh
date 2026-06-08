@@ -86,7 +86,12 @@ cargo release "$level" \
 
 new_version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
 
-cargo publish -p "$name" --locked
+# solana-safe-math: GitHub release only — crates.io name is taken by another publisher.
+if [[ "$crate" == "solana-safe-math" ]]; then
+  echo "Skipping crates.io publish for ${name} (GitHub release only)." >&2
+else
+  cargo publish -p "$name" --locked
+fi
 
 restore_release_stash
 trap - EXIT

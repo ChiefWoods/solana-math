@@ -62,8 +62,7 @@ Dependency order when releasing multiple crates in one cycle:
 
 1. `basis-points`
 2. `wrapped-decimal`
-
-`solana-safe-math` is excluded, crate name taken by unknown publisher.
+3. `solana-safe-math` (GitHub release only — not published to crates.io)
 
 Before publishing, confirm:
 

@@ -25,8 +25,15 @@ doc:
     cargo doc --workspace --no-deps --all-features --open
 
 # Publish one crate to crates.io only (no version bump or GitHub release).
+# Not for solana-safe-math (publish = false).
 # Prefer `just release` or the Publish GitHub Actions workflow for the full pipeline.
 publish crate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{crate}}" = "solana-safe-math" ]; then
+      echo "solana-safe-math is not published to crates.io; use \`just release solana-safe-math <level>\`" >&2
+      exit 1
+    fi
     cargo publish -p {{crate}} --locked
 
 # Preview the next release (no changes committed).
@@ -37,8 +44,8 @@ release-dry-run crate level:
 # Bump version, tag, push, and publish one crate locally.
 # Usage: `just release basis-points patch`
 # Exact version: `VERSION=0.4.0 just release basis-points version`
-# Full-release order (automated): basis-points → wrapped-decimal
-# solana-safe-math is excluded, crate name taken by unknown publisher
+# Full-release order: basis-points → wrapped-decimal → solana-safe-math
+# solana-safe-math is tagged and released on GitHub only (not crates.io)
 release crate level:
     ./scripts/publish.sh {{crate}} {{level}}
 
