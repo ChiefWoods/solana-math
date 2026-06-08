@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5
+- Bumped `anchor-lang` to 1.0.2.
+- Bumped `rust_decimal` to 1.42.0.
+
 ## 0.1.4
 - Added optional `codama` feature with `CodamaType` derive support for `WrappedDecimal`.
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3
+- Bumped `rust_decimal` to 1.42.0.
+
 ## 0.1.2
 - Added top-level crate and error module documentation comments.
 
