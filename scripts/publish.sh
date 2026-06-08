@@ -33,6 +33,11 @@ fi
 name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
 previous=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
 
+# workflow_run checkouts use a detached HEAD; cargo-release rejects that by default.
+if [[ "$(git rev-parse --abbrev-ref HEAD)" == "HEAD" ]]; then
+  git checkout -B main
+fi
+
 if $dry_run; then
   cargo release "$level" --manifest-path "$manifest" --dry-run
   exit 0
