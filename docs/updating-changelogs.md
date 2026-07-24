@@ -1,13 +1,10 @@
 # Updating changelogs (agent guide)
 
-This workspace maintains **two** release-note surfaces:
+This workspace maintains per-crate `CHANGELOG.md` files that ship on crates.io.
 
 | Surface | Location | Who updates it |
 |---------|----------|----------------|
-| Crate changelog | `<crate>/CHANGELOG.md` | **Manual** — update in the same PR as the change |
-| GitHub release | GitHub Releases (`crate-name@vX.Y.Z`) | **Local** — `git-cliff` when creating a release |
-
-Agents must keep per-crate `CHANGELOG.md` files current.
+| Crate changelog | `<crate>/CHANGELOG.md` | Update in the same change as the user-facing work |
 
 ## Which file to edit
 
@@ -56,22 +53,15 @@ Rules:
 
 ## Release workflow
 
-Publishing is local only (`just release <crate> <level>`). CI runs tests; it does not publish.
+Publishing is local only. CI runs tests; it does not publish.
 
 Dependency order when releasing multiple crates in one cycle:
 
 1. `basis-points`
 2. `wrapped-decimal`
-3. `solana-safe-math` (GitHub release only — not published to crates.io)
+3. `solana-safe-math` (not published to crates.io — `publish = false`)
 
-Before publishing, confirm:
-
-- The crate's `CHANGELOG.md` has a section for the version being released.
-- `Cargo.toml` `version` is still the **previous** release (the top changelog header is the target version); the release command bumps it to match.
-
-At release time, `Cargo.toml` `version` must match the section header being shipped.
-
-GitHub release notes are generated from git commits between tags via `git-cliff`. Crate `CHANGELOG.md` entries should still be written in plain language for docs.rs and crates.io readers.
+Before publishing, confirm the crate's `CHANGELOG.md` has a section for the version being released and that `Cargo.toml` `version` matches.
 
 ## Checklist for agents
 
