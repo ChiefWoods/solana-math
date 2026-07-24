@@ -1,0 +1,118 @@
+name: GitHub Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      crate:
+        description: Crate
+        required: true
+        default: basis-points
+        type: choice
+        options:
+          - basis-points
+          - wrapped-decimal
+          - solana-safe-math
+      dry_run:
+        description: Dry run (no tag push or GitHub release)
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-release-${{ github.workflow }}-${{ inputs.crate }}
+  cancel-in-progress: false
+
+jobs:
+  github-release:
+    name: GitHub release ${{ inputs.crate }}
+    runs-on: ubuntu-latest
+    env:
+      NO_HUSKY_HOOKS: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Resolve version and tags
+        id: meta
+        run: |
+          set -euo pipefail
+          crate="${{ inputs.crate }}"
+          manifest="${crate}/Cargo.toml"
+          name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
+          version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
+          new_tag="${name}@v${version}"
+
+          {
+            echo "crate_name=${name}"
+            echo "crate_version=${version}"
+            echo "new_git_tag=${new_tag}"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Resolved ${name} ${version} → ${new_tag}"
+
+      - name: Write release notes from CHANGELOG.md
+        run: |
+          set -euo pipefail
+          version="${{ steps.meta.outputs.crate_version }}"
+          changelog="${{ inputs.crate }}/CHANGELOG.md"
+          {
+            echo "## What's new"
+            echo ""
+            awk -v ver="$version" '
+              $0 ~ "^## \\[" ver "\\]" { found=1; next }
+              found && /^## / { exit }
+              found { print }
+            ' "$changelog"
+          } > RELEASE_NOTES.md
+          if [[ ! -s RELEASE_NOTES.md ]] || ! grep -q '[^[:space:]]' RELEASE_NOTES.md; then
+            echo "::error::No CHANGELOG section found for version ${version} in ${changelog}"
+            exit 1
+          fi
+          # Ensure body is more than just the header
+          body_lines=$(tail -n +3 RELEASE_NOTES.md | sed '/^[[:space:]]*$/d' | wc -l | tr -d ' ')
+          if [[ "$body_lines" -lt 1 ]]; then
+            echo "::error::CHANGELOG section for ${version} is empty in ${changelog}"
+            exit 1
+          fi
+
+      - name: Preview release
+        if: inputs.dry_run
+        run: |
+          echo "Would create GitHub release ${{ steps.meta.outputs.new_git_tag }}"
+          echo "---"
+          cat RELEASE_NOTES.md
+
+      - name: Set git author
+        if: inputs.dry_run != true
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Create and push tag
+        if: inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          tag="${{ steps.meta.outputs.new_git_tag }}"
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "Tag ${tag} already exists."
+          else
+            git tag -a "$tag" -m "Publish ${{ steps.meta.outputs.crate_name }} v${{ steps.meta.outputs.crate_version }}"
+            git push origin "refs/tags/${tag}"
+          fi
+
+      - name: Create GitHub release
+        if: inputs.dry_run != true
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.meta.outputs.new_git_tag }}
+          name: ${{ steps.meta.outputs.new_git_tag }}
+          bodyFile: RELEASE_NOTES.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+          skipIfReleaseExists: true

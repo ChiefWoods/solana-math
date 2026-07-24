@@ -78,11 +78,12 @@ Publishing is **not** done by agents unless the user explicitly asks. There is n
 just version                 # apply pending changesets
 # commit the version bump
 just publish basis-points    # then wrapped-decimal; skip solana-safe-math
+just github-release basis-points   # tag + GitHub Releases page (from CHANGELOG.md)
 ```
 
-Release order: `basis-points` → `wrapped-decimal` → `solana-safe-math` (`publish = false` on crates.io).
+Release order: `basis-points` → `wrapped-decimal` → `solana-safe-math` (`publish = false` on crates.io; still use `just github-release` for GitHub).
 
-Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).
+Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The **GitHub Release** workflow (`.github/workflows/github-release.yml`) can create the same release via `workflow_dispatch`.
 
 ## Git
 
@@ -97,7 +98,7 @@ basis-points/          # crate + CHANGELOG.md
 wrapped-decimal/
 solana-safe-math/
 .changeset/            # pending changeset files
-.github/workflows/     # tests.yml
+.github/workflows/     # tests.yml, github-release.yml
 docs/updating-changelogs.md
 Justfile               # workspace + changeset tasks
 ```
