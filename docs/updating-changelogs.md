@@ -5,9 +5,9 @@ This workspace maintains **two** release-note surfaces:
 | Surface | Location | Who updates it |
 |---------|----------|----------------|
 | Crate changelog | `<crate>/CHANGELOG.md` | **Manual** — update in the same PR as the change |
-| GitHub release | GitHub Releases (`crate-name@vX.Y.Z`) | **Automatic** — `git-cliff` during the Publish workflow |
+| GitHub release | GitHub Releases (`crate-name@vX.Y.Z`) | **Local** — `git-cliff` when creating a release |
 
-Agents must keep per-crate `CHANGELOG.md` files current. Do not rely on the Publish workflow to update them.
+Agents must keep per-crate `CHANGELOG.md` files current.
 
 ## Which file to edit
 
@@ -56,7 +56,7 @@ Rules:
 
 ## Release workflow
 
-Publishing is per crate via the **Publish** GitHub Actions workflow (or `just release <crate> <level>` locally).
+Publishing is local only (`just release <crate> <level>`). CI runs tests; it does not publish.
 
 Dependency order when releasing multiple crates in one cycle:
 
@@ -67,11 +67,11 @@ Dependency order when releasing multiple crates in one cycle:
 Before publishing, confirm:
 
 - The crate's `CHANGELOG.md` has a section for the version being released.
-- `Cargo.toml` `version` is still the **previous** release (the top changelog header is the target version). After Tests pass on `main`, the Publish workflow auto-releases any crate whose changelog version is ahead of `Cargo.toml`.
+- `Cargo.toml` `version` is still the **previous** release (the top changelog header is the target version); the release command bumps it to match.
 
-At release time, `Cargo.toml` `version` must match the section header being shipped (the publish script bumps it to that version).
+At release time, `Cargo.toml` `version` must match the section header being shipped.
 
-GitHub release notes are generated from git commits between tags. Crate `CHANGELOG.md` entries should still be written in plain language for docs.rs and crates.io readers — do not assume they will read GitHub Releases.
+GitHub release notes are generated from git commits between tags via `git-cliff`. Crate `CHANGELOG.md` entries should still be written in plain language for docs.rs and crates.io readers.
 
 ## Checklist for agents
 

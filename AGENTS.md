@@ -35,7 +35,7 @@ just fmt            # format (CI uses --check)
 cargo fmt --all -- --check   # what CI / pre-commit runs
 ```
 
-CI (`.github/workflows/tests.yml`) runs: check → fmt check → clippy → test, all with `--all-features --locked`.
+CI (`.github/workflows/tests.yml`) runs: check → fmt check → clippy → docs → test, all with `--all-features --locked`.
 
 Local Git hooks (`.husky/pre-commit`) run check, clippy, and fmt check. Set `NO_HUSKY_HOOKS=1` to skip hooks in automation.
 
@@ -70,30 +70,21 @@ Quick rules:
 
 ## Releases
 
-Publishing is **not** done by agents unless the user explicitly asks.
+Publishing is **not** done by agents unless the user explicitly asks. There is no Publish CI workflow — release locally.
 
 | Method | When |
 |--------|------|
-| GitHub Actions **Publish** workflow | Preferred — version bump, tag, crates.io, GitHub release |
-| `just release <crate-dir> <level>` | Local publish (needs `cargo-release`) |
+| `just release <crate-dir> <level>` | Version bump, tag, crates.io, GitHub release (needs `cargo-release`) |
 | `just publish <crate-name>` | crates.io only, no version bump |
 
 Release order when multiple crates ship: `basis-points` → `wrapped-decimal` → `solana-safe-math`. The last crate is tagged and gets a GitHub release only (`publish = false` on crates.io — name taken by another publisher).
-
-The Publish workflow runs automatically after **Tests** succeeds on a `main` push when a crate's top `CHANGELOG.md` version is ahead of its `Cargo.toml` version (dependency order above). Manual runs via **workflow_dispatch** are still supported.
-
-The Publish workflow requires:
-
-- Branch `main`
-- **Tests** workflow succeeded on the current commit (checked on manual runs; automatic runs are triggered by Tests success)
-- `CARGO_REGISTRY_TOKEN` in the `release` environment
 
 Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).
 
 ## Git
 
 - Do **not** create commits, tags, or pushes unless the user asks.
-- Do **not** run `just release` or the Publish workflow unless the user asks.
+- Do **not** run `just release` unless the user asks.
 - Do **not** add markdown files the user did not request (except when this guide or linked docs are the task).
 
 ## Key paths
@@ -102,7 +93,7 @@ Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).
 basis-points/          # crate + CHANGELOG.md
 wrapped-decimal/
 solana-safe-math/
-.github/workflows/     # tests.yml, publish.yml
+.github/workflows/     # tests.yml
 .github/cliff.toml     # GitHub release note template
 scripts/publish.sh     # release automation
 docs/updating-changelogs.md

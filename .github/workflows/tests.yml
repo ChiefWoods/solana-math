@@ -36,7 +36,7 @@ jobs:
   tests:
     env:
       NO_HUSKY_HOOKS: 1
-    name: Check, fmt, clippy and test
+    name: Check, fmt, clippy, docs, and test
     runs-on: ubuntu-latest
 
     steps:
@@ -59,6 +59,11 @@ jobs:
 
       - name: Cargo clippy (deny warnings)
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+
+      - name: Cargo doc (workspace)
+        run: cargo doc --workspace --no-deps --all-features --locked
+        env:
+          RUSTDOCFLAGS: -D warnings
 
       - name: Cargo test (workspace)
         run: cargo test --workspace --all-features --locked
