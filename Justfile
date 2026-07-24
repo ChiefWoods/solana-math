@@ -23,3 +23,33 @@ fmt:
 
 doc:
     cargo doc --workspace --no-deps --all-features --open
+
+# --- cargo-changeset (install: cargo install cargo-changeset) ---
+# Flow: just changeset → just version → commit → just publish <crate>
+
+# Add a changeset (interactive, or pass flags: -p NAME -b patch -m "…").
+changeset *args:
+    cargo changeset add {{args}}
+
+# Show pending changesets and projected bumps.
+changeset-status:
+    cargo changeset status
+
+# Verify changed crates have changeset coverage (optional: --base main).
+changeset-verify *args:
+    cargo changeset verify {{args}}
+
+# Apply pending changesets: bump Cargo.toml + CHANGELOG.md (no commit/tag).
+# Preview with: just version --dry-run
+version *args:
+    cargo changeset release {{args}}
+
+# Publish one crate to crates.io (after just version + commit). Not for solana-safe-math.
+publish crate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ "{{crate}}" = "solana-safe-math" ]; then
+      echo "solana-safe-math is not published to crates.io (publish = false)." >&2
+      exit 1
+    fi
+    cargo publish -p {{crate}} --locked

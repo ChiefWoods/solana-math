@@ -32,6 +32,8 @@ just check          # cargo check --workspace --all-features --locked
 just test           # cargo test --workspace --all-features --locked
 just clippy         # deny warnings
 just fmt            # format (CI uses --check)
+just changeset      # add a changeset (needs cargo-changeset)
+just version        # bump versions + changelogs from pending changesets
 cargo fmt --all -- --check   # what CI / pre-commit runs
 ```
 
@@ -47,7 +49,7 @@ Local Git hooks (`.husky/pre-commit`) run check, clippy, and fmt check. Set `NO_
 - Fixed-size decimal storage → `wrapped-decimal`
 - Generic checked ops or shared traits → `solana-safe-math`
 
-If a change spans crates, update each crate and its changelog (see below).
+If a change spans crates, include each affected crate in the changeset (see below).
 
 ### Code style
 
@@ -56,24 +58,31 @@ If a change spans crates, update each crate and its changelog (see below).
 - Keep `Cargo.lock` in sync (`--locked` in CI); run `cargo build` / `cargo test` after dependency changes.
 - New public API surface: add or extend tests in the same crate.
 
-### Changelogs
+### Changesets and changelogs
 
-Per-crate `CHANGELOG.md` files are **manual** and ship on crates.io. Update them in the same change as user-facing work.
+Versioning and per-crate `CHANGELOG.md` updates are managed by [`cargo-changeset`](https://github.com/lukidoescode/cargo-changeset).
 
 **Full guide:** [docs/updating-changelogs.md](docs/updating-changelogs.md)
 
 Quick rules:
 
-- Edit `<crate>/CHANGELOG.md` only for crates you changed.
-- Newest version section first; prefix breaking items with `**Breaking:**`.
+- User-facing crate changes need a changeset (`just changeset` / `cargo changeset add`).
+- Do not hand-bump `Cargo.toml` versions or invent changelog version headers — run `just version` at release time.
+- Run `cargo changeset verify` before committing when the working tree has crate source changes.
 
 ## Releases
 
-Publishing is **not** done by agents unless the user explicitly asks. There is no Publish CI workflow — release locally with `cargo publish` (skip `solana-safe-math`, which has `publish = false`).
+Publishing is **not** done by agents unless the user explicitly asks. There is no Publish CI workflow.
 
-Release order when multiple crates ship: `basis-points` → `wrapped-decimal` → `solana-safe-math`.
+```bash
+just version                 # apply pending changesets
+# commit the version bump
+just publish basis-points    # then wrapped-decimal; skip solana-safe-math
+```
 
-Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).
+Release order: `basis-points` → `wrapped-decimal` → `solana-safe-math` (`publish = false` on crates.io).
+
+Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).
 
 ## Git
 
@@ -87,9 +96,10 @@ Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`).
 basis-points/          # crate + CHANGELOG.md
 wrapped-decimal/
 solana-safe-math/
+.changeset/            # pending changeset files
 .github/workflows/     # tests.yml
 docs/updating-changelogs.md
-Justfile               # workspace tasks
+Justfile               # workspace + changeset tasks
 ```
 
 ## Checklist before handing off
@@ -97,5 +107,5 @@ Justfile               # workspace tasks
 - [ ] Changes limited to the relevant crate(s)
 - [ ] `just check`, `just clippy`, `just test` pass (or equivalent)
 - [ ] `cargo fmt --all -- --check` passes
-- [ ] User-facing changes reflected in the right `CHANGELOG.md` (see linked guide)
+- [ ] User-facing changes covered by a changeset (`cargo changeset verify`)
 - [ ] No version bumps or publish steps unless requested

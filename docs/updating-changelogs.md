@@ -1,72 +1,55 @@
 # Updating changelogs (agent guide)
 
-This workspace maintains per-crate `CHANGELOG.md` files that ship on crates.io.
+This workspace uses [`cargo-changeset`](https://github.com/lukidoescode/cargo-changeset) to version crates and update per-crate `CHANGELOG.md` files (shipped on crates.io).
 
 | Surface | Location | Who updates it |
 |---------|----------|----------------|
-| Crate changelog | `<crate>/CHANGELOG.md` | Update in the same change as the user-facing work |
+| Release intent | `.changeset/` | Add with `just changeset` in the same change as the work |
+| Crate changelog | `<crate>/CHANGELOG.md` | Written by `just version` from pending changesets |
 
-## Which file to edit
+Do **not** hand-edit version headers in `CHANGELOG.md` or bump `Cargo.toml` versions for a release — use the commands below.
 
-Edit only the changelog for the crate whose public API or behavior changed:
+## Commands
 
-- `basis-points/CHANGELOG.md`
-- `wrapped-decimal/CHANGELOG.md`
-- `solana-safe-math/CHANGELOG.md`
+```bash
+just changeset                          # record intent (interactive)
+just changeset -p basis-points -b patch -c fixed -m "Fix …"
+just changeset-status                   # preview bumps
+just version                            # apply bumps + changelog entries
+just version --dry-run                  # preview only
+just publish basis-points               # crates.io (after commit)
+```
 
-If a change spans multiple crates, update each affected changelog.
+Typical flow (same idea as JS Changesets):
 
-Each file is listed in that crate's `Cargo.toml` `include` array and ships on crates.io.
+1. Make code changes
+2. `just changeset` (or `cargo changeset verify` to see what's uncovered)
+3. Commit code + changeset files together
+4. When releasing: `just version`, review the diff, commit
+5. `just publish <crate>` in dependency order (`basis-points` → `wrapped-decimal`; skip `solana-safe-math`)
 
-## When to update
+## When to add a changeset
 
-Add or extend an entry when the PR includes any **user-facing** change:
+Add a changeset for any **user-facing** change to a published crate:
 
 - New API, feature flag, or type
 - Behavior change or bug fix users might notice
-- **Breaking change** (always call out explicitly)
+- **Breaking change** (use bump `major`, or `minor` under 0.x with `effective-minor` semantics)
 
-Skip changelog updates for internal-only work (CI, refactors with no API impact, comment-only edits) unless the team expects a release note.
+Skip for internal-only work (CI, comment-only, no API impact) unless you intend a release note. Use bump `none` for documented internal changes that should not force a version bump (promoted to `patch` on release by default).
 
-## Format
+## Writing the description
 
-Follow the existing style in each crate's `CHANGELOG.md`:
+The changeset body becomes the changelog entry. Write it for crate consumers:
 
-```markdown
-# Changelog
+- Good: `Add optional \`codama\` feature for \`BasisPoints\`.`
+- Bad: `Refactored src/lib.rs`
 
-## 0.3.2
-- Added optional `foo` feature for `Bar`.
-- **Breaking:** `Baz::qux` now returns `Result` instead of panicking.
-
-## 0.3.1
-- Previous release entry.
-```
-
-Rules:
-
-1. **Newest version first** — insert a new `## X.Y.Z` section directly under `# Changelog`.
-2. **Version header** — must match the version in that crate's `Cargo.toml` **at release time**. During development, use the version the change will ship with (usually the next bump).
-3. **Bullets** — one line per change; start with a past-tense verb (`Added`, `Fixed`, `Removed`, `Renamed`).
-4. **Breaking changes** — prefix the bullet with `**Breaking:**`.
-5. **Scope** — describe what changed for crate users, not implementation detail.
-
-## Release workflow
-
-Publishing is local only. CI runs tests; it does not publish.
-
-Dependency order when releasing multiple crates in one cycle:
-
-1. `basis-points`
-2. `wrapped-decimal`
-3. `solana-safe-math` (not published to crates.io — `publish = false`)
-
-Before publishing, confirm the crate's `CHANGELOG.md` has a section for the version being released and that `Cargo.toml` `version` matches.
+Categories: `added`, `changed`, `deprecated`, `removed`, `fixed`, `security` (default `changed`).
 
 ## Checklist for agents
 
-- [ ] Identified the correct `<crate>/CHANGELOG.md` file(s)
-- [ ] Added a `## X.Y.Z` section at the top (or extended the unreleased top section if one exists)
-- [ ] Marked breaking changes with `**Breaking:**`
-- [ ] Described user-visible impact, not internal refactors
-- [ ] Did not edit other crates' changelogs unless those crates changed
+- [ ] Ran `cargo changeset verify` (or added changesets for every uncovered crate)
+- [ ] Changeset description is user-facing, not an implementation diary
+- [ ] Did not manually bump `Cargo.toml` / `CHANGELOG.md` version headers
+- [ ] Did not publish unless the user asked
