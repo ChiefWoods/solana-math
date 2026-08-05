@@ -1,4 +1,4 @@
-//! `solana-safe-math` provides checked arithmetic and conversion traits that
+//! `solana-math` provides checked arithmetic and conversion traits that
 //! return explicit errors instead of panicking.
 //!
 //! Functionality is organized into trait implementations in [`impls`] and uses

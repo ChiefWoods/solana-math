@@ -26,7 +26,7 @@ Typical flow (same idea as JS Changesets):
 2. `just changeset` (or `cargo changeset verify` to see what's uncovered)
 3. Commit code + changeset files together
 4. When releasing: `just version`, review the diff, commit
-5. `just publish <crate>` in dependency order (`basis-points` → `wrapped-decimal`; skip `solana-safe-math`)
+5. `just publish <crate>` in dependency order (`basis-points` → `wrapped-decimal` → `solana-math`)
 6. `just github-release <crate>` (or the **GitHub Release** workflow) to tag and post notes on the Releases page
 
 ## When to add a changeset

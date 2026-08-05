@@ -44,14 +44,8 @@ changeset-verify *args:
 version *args:
     cargo changeset release {{args}}
 
-# Publish one crate to crates.io (after just version + commit). Not for solana-safe-math.
+# Publish one crate to crates.io (after just version + commit).
 publish crate:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [ "{{crate}}" = "solana-safe-math" ]; then
-      echo "solana-safe-math is not published to crates.io (publish = false)." >&2
-      exit 1
-    fi
     cargo publish -p {{crate}} --locked
 
 # Tag current Cargo.toml version and create a GitHub release from CHANGELOG.md (needs gh).

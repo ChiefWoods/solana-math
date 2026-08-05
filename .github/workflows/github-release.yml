@@ -11,7 +11,7 @@ on:
         options:
           - basis-points
           - wrapped-decimal
-          - solana-safe-math
+          - solana-math
       dry_run:
         description: Dry run (no tag push or GitHub release)
         required: true

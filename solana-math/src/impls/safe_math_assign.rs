@@ -44,6 +44,7 @@ macro_rules! math_assign_impl {
     };
 }
 
+#[cfg(feature = "zeropod")]
 macro_rules! zeropod_math_assign_impl {
     ($pod:ty, $native:ty) => {
         math_assign_impl!($pod);

@@ -10,8 +10,8 @@ on:
       - basis-points/src/**
       - wrapped-decimal/Cargo.toml
       - wrapped-decimal/src/**
-      - solana-safe-math/Cargo.toml
-      - solana-safe-math/src/**
+      - solana-math/Cargo.toml
+      - solana-math/src/**
   push:
     branches: [main]
     paths:
@@ -21,8 +21,8 @@ on:
       - basis-points/src/**
       - wrapped-decimal/Cargo.toml
       - wrapped-decimal/src/**
-      - solana-safe-math/Cargo.toml
-      - solana-safe-math/src/**
+      - solana-math/Cargo.toml
+      - solana-math/src/**
   workflow_dispatch:
 
 permissions:

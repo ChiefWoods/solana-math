@@ -1,4 +1,4 @@
-//! Error types for `solana-safe-math`.
+//! Error types for `solana-math`.
 //!
 //! This module defines [`SafeMathError`], used by checked arithmetic and safe
 //! numeric conversion helpers.

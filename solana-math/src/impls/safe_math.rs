@@ -70,6 +70,7 @@ macro_rules! math_impl {
     };
 }
 
+#[cfg(feature = "zeropod")]
 macro_rules! zeropod_math_impl {
     ($pod:ty, $native:ty) => {
         math_impl!($pod);

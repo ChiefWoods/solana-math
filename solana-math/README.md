@@ -1,4 +1,4 @@
-# solana-safe-math
+# solana-math
 
 Checked math and numeric conversion traits that return explicit errors instead of panicking.
 
@@ -12,7 +12,7 @@ Checked math and numeric conversion traits that return explicit errors instead o
 ## Install
 
 ```bash
-cargo add solana-safe-math
+cargo add solana-math
 ```
 
 ## Features
@@ -28,9 +28,9 @@ Numeric trait impls are gated by features:
 ## Example
 
 ```rust
-use solana_safe_math::SafeMath;
+use solana_math::SafeMath;
 
 let x: u64 = 10;
 assert_eq!(x.safe_add(5)?, 15);
-# Ok::<(), solana_safe_math::SafeMathError>(())
+# Ok::<(), solana_math::SafeMathError>(())
 ```

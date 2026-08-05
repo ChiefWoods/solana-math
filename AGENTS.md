@@ -10,16 +10,16 @@ Rust workspace of small, dependency-light math crates for Solana programs and of
 |-------|------|------|
 | `basis-points` | `basis-points/` | Validated `BasisPoints` type (`0..=10_000`) |
 | `wrapped-decimal` | `wrapped-decimal/` | POD-safe 16-byte `Decimal` wrapper |
-| `solana-safe-math` | `solana-safe-math/` | Checked arithmetic traits (no panics) |
+| `solana-math` | `solana-math/` | Checked arithmetic traits (no panics) |
 
-Workspace dependency order: `basis-points` → `wrapped-decimal` → `solana-safe-math`.
+Workspace dependency order: `basis-points` → `wrapped-decimal` → `solana-math`.
 
 ## Principles
 
 1. **Minimal scope** — Change only what the task requires. Match existing style in the crate you touch.
 2. **Safe math** — Prefer explicit errors (`Result`, `thiserror`) over panics in library code.
 3. **Determinism** — Avoid behavior that differs between on-chain and off-chain unless behind a feature flag.
-4. **Feature flags** — Optional integrations stay optional (`anchor`, `codama`, `decimal`, integer width flags in `solana-safe-math`). Do not enable them in `default` features.
+4. **Feature flags** — Optional integrations stay optional (`anchor`, `codama`, `decimal`, integer width flags in `solana-math`). Do not enable them in `default` features.
 5. **Documentation** — Public items get `///` docs consistent with sibling crates. Crate roots have a short module-level `//!` overview.
 6. **No drive-by edits** — Do not reformat, rename, or refactor unrelated code.
 
@@ -47,7 +47,7 @@ Local Git hooks (`.husky/pre-commit`) run check, clippy, and fmt check. Set `NO_
 
 - Type / conversion for basis points → `basis-points`
 - Fixed-size decimal storage → `wrapped-decimal`
-- Generic checked ops or shared traits → `solana-safe-math`
+- Generic checked ops or shared traits → `solana-math`
 
 If a change spans crates, include each affected crate in the changeset (see below).
 
@@ -77,11 +77,11 @@ Publishing is **not** done by agents unless the user explicitly asks. There is n
 ```bash
 just version                 # apply pending changesets
 # commit the version bump
-just publish basis-points    # then wrapped-decimal; skip solana-safe-math
+just publish basis-points    # then wrapped-decimal, then solana-math
 just github-release basis-points   # tag + GitHub Releases page (from CHANGELOG.md)
 ```
 
-Release order: `basis-points` → `wrapped-decimal` → `solana-safe-math` (`publish = false` on crates.io; still use `just github-release` for GitHub).
+Release order: `basis-points` → `wrapped-decimal` → `solana-math`.
 
 Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The **GitHub Release** workflow (`.github/workflows/github-release.yml`) can create the same release via `workflow_dispatch`.
 
@@ -96,7 +96,7 @@ Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The
 ```
 basis-points/          # crate + CHANGELOG.md
 wrapped-decimal/
-solana-safe-math/
+solana-math/
 .changeset/            # pending changeset files
 .github/workflows/     # tests.yml, github-release.yml
 docs/updating-changelogs.md
