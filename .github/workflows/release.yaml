@@ -1,4 +1,4 @@
-name: GitHub Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -13,21 +13,22 @@ on:
           - wrapped-decimal
           - solana-math
       dry_run:
-        description: Dry run (no tag push or GitHub release)
+        description: Dry run (no crates.io publish, tag, or GitHub release)
         required: true
         default: true
         type: boolean
 
 permissions:
   contents: write
+  id-token: write
 
 concurrency:
-  group: github-release-${{ github.workflow }}-${{ inputs.crate }}
+  group: release-${{ github.workflow }}-${{ inputs.crate }}
   cancel-in-progress: false
 
 jobs:
-  github-release:
-    name: GitHub release ${{ inputs.crate }}
+  release:
+    name: Release ${{ inputs.crate }}
     runs-on: ubuntu-latest
     env:
       NO_HUSKY_HOOKS: 1
@@ -38,6 +39,12 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry + build
+        uses: Swatinem/rust-cache@v2
 
       - name: Resolve version and tags
         id: meta
@@ -75,7 +82,6 @@ jobs:
             echo "::error::No CHANGELOG section found for version ${version} in ${changelog}"
             exit 1
           fi
-          # Ensure body is more than just the header
           body_lines=$(tail -n +3 RELEASE_NOTES.md | sed '/^[[:space:]]*$/d' | wc -l | tr -d ' ')
           if [[ "$body_lines" -lt 1 ]]; then
             echo "::error::CHANGELOG section for ${version} is empty in ${changelog}"
@@ -85,9 +91,25 @@ jobs:
       - name: Preview release
         if: inputs.dry_run
         run: |
+          echo "Would publish ${{ steps.meta.outputs.crate_name }} ${{ steps.meta.outputs.crate_version }} to crates.io"
           echo "Would create GitHub release ${{ steps.meta.outputs.new_git_tag }}"
           echo "---"
           cat RELEASE_NOTES.md
+
+      - name: Dry-run cargo publish
+        if: inputs.dry_run
+        run: cargo publish -p "${{ inputs.crate }}" --locked --dry-run
+
+      - name: Authenticate with crates.io
+        if: inputs.dry_run != true
+        id: auth
+        uses: rust-lang/crates-io-auth-action@v1
+
+      - name: Publish to crates.io
+        if: inputs.dry_run != true
+        run: cargo publish -p "${{ inputs.crate }}" --locked
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
 
       - name: Set git author
         if: inputs.dry_run != true

@@ -25,7 +25,7 @@ doc:
     cargo doc --workspace --no-deps --all-features --open
 
 # --- cargo-changeset (install: cargo install cargo-changeset) ---
-# Flow: just changeset → just version → commit → just publish <crate> → just github-release <crate>
+# Flow: just changeset → just version → commit
 
 # Add a changeset (interactive, or pass flags: -p NAME -b patch -m "…").
 changeset *args:
@@ -43,48 +43,3 @@ changeset-verify *args:
 # Preview with: just version --dry-run
 version *args:
     cargo changeset release {{args}}
-
-# Publish one crate to crates.io (after just version + commit).
-publish crate:
-    cargo publish -p {{crate}} --locked
-
-# Tag current Cargo.toml version and create a GitHub release from CHANGELOG.md (needs gh).
-# Usage: `just github-release basis-points`
-github-release crate:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    crate="{{crate}}"
-    manifest="crates/${crate}/Cargo.toml"
-    changelog="crates/${crate}/CHANGELOG.md"
-    name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
-    version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
-    new_tag="${name}@v${version}"
-
-    notes="$(mktemp)"
-    trap 'rm -f "$notes"' EXIT
-    {
-      echo "## What's new"
-      echo ""
-      awk -v ver="$version" '
-        $0 ~ "^## \\[" ver "\\]" { found=1; next }
-        found && /^## / { exit }
-        found { print }
-      ' "$changelog"
-    } >"$notes"
-
-    if ! grep -q '[^[:space:]]' <(tail -n +3 "$notes"); then
-      echo "error: no CHANGELOG section for version ${version} in ${changelog}" >&2
-      exit 1
-    fi
-
-    if ! git rev-parse -q --verify "refs/tags/${new_tag}" >/dev/null; then
-      git tag -a "$new_tag" -m "Publish ${name} v${version}"
-      git push origin "refs/tags/${new_tag}"
-    fi
-
-    if gh release view "$new_tag" >/dev/null 2>&1; then
-      echo "GitHub release ${new_tag} already exists; skipping."
-      exit 0
-    fi
-
-    gh release create "$new_tag" --title "$new_tag" --notes-file "$notes"

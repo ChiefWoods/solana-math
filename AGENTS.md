@@ -72,18 +72,17 @@ Quick rules:
 
 ## Releases
 
-Publishing is **not** done by agents unless the user explicitly asks. There is no Publish CI workflow.
+Publishing is **not** done by agents unless the user explicitly asks.
 
 ```bash
 just version                 # apply pending changesets
 # commit the version bump
-just publish basis-points    # then wrapped-decimal, then solana-math
-just github-release basis-points   # tag + GitHub Releases page (from CHANGELOG.md)
+# then run the Release workflow per crate (trusted publishing only)
 ```
 
 Release order: `basis-points` → `wrapped-decimal` → `solana-math`.
 
-Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The **GitHub Release** workflow (`.github/workflows/github-release.yml`) can create the same release via `workflow_dispatch`.
+Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The **Release** workflow (`.github/workflows/release.yaml`) publishes to crates.io via [trusted publishing](https://crates.io/docs/trusted-publishing), then tags and creates the GitHub release (`workflow_dispatch`, one crate at a time). Do not publish with a crates.io API token.
 
 ## Git
 
@@ -98,7 +97,7 @@ crates/basis-points/   # crate + CHANGELOG.md
 crates/wrapped-decimal/
 crates/solana-math/
 .changeset/            # pending changeset files
-.github/workflows/     # tests.yml, github-release.yml
+.github/workflows/     # tests.yml, release.yaml
 docs/updating-changelogs.md
 Justfile               # workspace + changeset tasks
 ```

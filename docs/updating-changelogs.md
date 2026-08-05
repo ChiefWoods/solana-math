@@ -17,7 +17,6 @@ just changeset -p basis-points -b patch -c fixed -m "Fix …"
 just changeset-status                   # preview bumps
 just version                            # apply bumps + changelog entries
 just version --dry-run                  # preview only
-just publish basis-points               # crates.io (after commit)
 ```
 
 Typical flow (same idea as JS Changesets):
@@ -26,8 +25,9 @@ Typical flow (same idea as JS Changesets):
 2. `just changeset` (or `cargo changeset verify` to see what's uncovered)
 3. Commit code + changeset files together
 4. When releasing: `just version`, review the diff, commit
-5. `just publish <crate>` in dependency order (`basis-points` → `wrapped-decimal` → `solana-math`)
-6. `just github-release <crate>` (or the **GitHub Release** workflow) to tag and post notes on the Releases page
+5. Run the **Release** workflow (`.github/workflows/release.yaml`) per crate in dependency order (`basis-points` → `wrapped-decimal` → `solana-math`)
+
+Publishing uses crates.io [trusted publishing](https://crates.io/docs/trusted-publishing) only (OIDC from GitHub Actions). Do not publish with a crates.io API token.
 
 ## When to add a changeset
 

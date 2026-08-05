@@ -16,7 +16,6 @@ just test
 just doc
 just changeset    # add release intent (requires cargo-changeset)
 just version      # bump versions + changelogs from changesets
-just publish <crate>
 ```
 
 Install the release helper once: `cargo install cargo-changeset`.
