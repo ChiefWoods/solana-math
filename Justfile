@@ -25,7 +25,8 @@ doc:
     cargo doc --workspace --no-deps --all-features --open
 
 # --- cargo-changeset (install: cargo install cargo-changeset) ---
-# Flow: just changeset → just version → commit
+# Flow: just changeset → just version → commit → just release <crate>
+# `just release` pushes crate@vX.Y.Z; the Release workflow publishes + GitHub release.
 
 # Add a changeset (interactive, or pass flags: -p NAME -b patch -m "…").
 changeset *args:
@@ -43,3 +44,23 @@ changeset-verify *args:
 # Preview with: just version --dry-run
 version *args:
     cargo changeset release {{args}}
+
+# Tag current Cargo.toml version and push (triggers Release workflow).
+# Usage: `just release basis-points` (order: basis-points → wrapped-decimal → solana-math)
+release crate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    crate="{{crate}}"
+    manifest="crates/${crate}/Cargo.toml"
+    name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
+    version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
+    tag="${name}@v${version}"
+
+    if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+      echo "error: tag ${tag} already exists" >&2
+      exit 1
+    fi
+
+    git tag -a "$tag" -m "Publish ${name} v${version}"
+    git push origin "refs/tags/${tag}"
+    echo "Pushed ${tag}; Release workflow will publish to crates.io and create the GitHub release."

@@ -16,9 +16,10 @@ just test
 just doc
 just changeset    # add release intent (requires cargo-changeset)
 just version      # bump versions + changelogs from changesets
+just release <crate>  # push crate@vX.Y.Z tag → Release workflow
 ```
 
-Install the release helper once: `cargo install cargo-changeset`.
+Install the release helper once: `cargo install cargo-changeset`. Publishing is tag-driven via trusted publishing.
 
 ## Notes
 

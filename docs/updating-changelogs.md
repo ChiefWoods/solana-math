@@ -24,10 +24,10 @@ Typical flow (same idea as JS Changesets):
 1. Make code changes
 2. `just changeset` (or `cargo changeset verify` to see what's uncovered)
 3. Commit code + changeset files together
-4. When releasing: `just version`, review the diff, commit
-5. Run the **Release** workflow (`.github/workflows/release.yaml`) per crate in dependency order (`basis-points` → `wrapped-decimal` → `solana-math`)
+4. When releasing: `just version`, review the diff, commit and push
+5. `just release <crate>` per crate in dependency order (`basis-points` → `wrapped-decimal` → `solana-math`) — pushes `crate@vX.Y.Z` and triggers the **Release** workflow
 
-Publishing uses crates.io [trusted publishing](https://crates.io/docs/trusted-publishing) only (OIDC from GitHub Actions). Do not publish with a crates.io API token.
+Publishing uses crates.io [trusted publishing](https://crates.io/docs/trusted-publishing) only (OIDC from GitHub Actions on tag push). Do not publish with a crates.io API token.
 
 ## When to add a changeset
 

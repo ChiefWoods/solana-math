@@ -1,34 +1,23 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      crate:
-        description: Crate
-        required: true
-        default: basis-points
-        type: choice
-        options:
-          - basis-points
-          - wrapped-decimal
-          - solana-math
-      dry_run:
-        description: Dry run (no crates.io publish, tag, or GitHub release)
-        required: true
-        default: true
-        type: boolean
+  push:
+    tags:
+      - 'basis-points@v*'
+      - 'wrapped-decimal@v*'
+      - 'solana-math@v*'
 
 permissions:
   contents: write
   id-token: write
 
 concurrency:
-  group: release-${{ github.workflow }}-${{ inputs.crate }}
+  group: release-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   release:
-    name: Release ${{ inputs.crate }}
+    name: Release ${{ github.ref_name }}
     runs-on: ubuntu-latest
     env:
       NO_HUSKY_HOOKS: 1
@@ -36,9 +25,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -46,29 +32,47 @@ jobs:
       - name: Cache cargo registry + build
         uses: Swatinem/rust-cache@v2
 
-      - name: Resolve version and tags
+      - name: Parse tag and verify Cargo.toml
         id: meta
         run: |
           set -euo pipefail
-          crate="${{ inputs.crate }}"
+          tag="${GITHUB_REF_NAME}"
+          if [[ ! "$tag" =~ ^([a-z0-9-]+)@v([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
+            echo "::error::Tag '${tag}' does not match crate@vX.Y.Z"
+            exit 1
+          fi
+          crate="${BASH_REMATCH[1]}"
+          version="${BASH_REMATCH[2]}"
           manifest="crates/${crate}/Cargo.toml"
+          if [[ ! -f "$manifest" ]]; then
+            echo "::error::Unknown crate '${crate}' (missing ${manifest})"
+            exit 1
+          fi
           name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
-          version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
-          new_tag="${name}@v${version}"
+          cargo_version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
+          if [[ "$name" != "$crate" ]]; then
+            echo "::error::Package name '${name}' does not match tag crate '${crate}'"
+            exit 1
+          fi
+          if [[ "$cargo_version" != "$version" ]]; then
+            echo "::error::Tag version '${version}' does not match ${manifest} version '${cargo_version}'"
+            exit 1
+          fi
 
           {
+            echo "crate=${crate}"
             echo "crate_name=${name}"
             echo "crate_version=${version}"
-            echo "new_git_tag=${new_tag}"
+            echo "git_tag=${tag}"
           } >> "$GITHUB_OUTPUT"
 
-          echo "Resolved ${name} ${version} → ${new_tag}"
+          echo "Releasing ${name} ${version} from tag ${tag}"
 
       - name: Write release notes from CHANGELOG.md
         run: |
           set -euo pipefail
           version="${{ steps.meta.outputs.crate_version }}"
-          changelog="crates/${{ inputs.crate }}/CHANGELOG.md"
+          changelog="crates/${{ steps.meta.outputs.crate }}/CHANGELOG.md"
           {
             echo "## What's new"
             echo ""
@@ -88,53 +92,20 @@ jobs:
             exit 1
           fi
 
-      - name: Preview release
-        if: inputs.dry_run
-        run: |
-          echo "Would publish ${{ steps.meta.outputs.crate_name }} ${{ steps.meta.outputs.crate_version }} to crates.io"
-          echo "Would create GitHub release ${{ steps.meta.outputs.new_git_tag }}"
-          echo "---"
-          cat RELEASE_NOTES.md
-
-      - name: Dry-run cargo publish
-        if: inputs.dry_run
-        run: cargo publish -p "${{ inputs.crate }}" --locked --dry-run
-
       - name: Authenticate with crates.io
-        if: inputs.dry_run != true
         id: auth
         uses: rust-lang/crates-io-auth-action@v1
 
       - name: Publish to crates.io
-        if: inputs.dry_run != true
-        run: cargo publish -p "${{ inputs.crate }}" --locked
+        run: cargo publish -p "${{ steps.meta.outputs.crate }}" --locked
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
 
-      - name: Set git author
-        if: inputs.dry_run != true
-        run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-
-      - name: Create and push tag
-        if: inputs.dry_run != true
-        run: |
-          set -euo pipefail
-          tag="${{ steps.meta.outputs.new_git_tag }}"
-          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
-            echo "Tag ${tag} already exists."
-          else
-            git tag -a "$tag" -m "Publish ${{ steps.meta.outputs.crate_name }} v${{ steps.meta.outputs.crate_version }}"
-            git push origin "refs/tags/${tag}"
-          fi
-
       - name: Create GitHub release
-        if: inputs.dry_run != true
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.meta.outputs.new_git_tag }}
-          name: ${{ steps.meta.outputs.new_git_tag }}
+          tag: ${{ steps.meta.outputs.git_tag }}
+          name: ${{ steps.meta.outputs.git_tag }}
           bodyFile: RELEASE_NOTES.md
           token: ${{ secrets.GITHUB_TOKEN }}
           skipIfReleaseExists: true

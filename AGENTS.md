@@ -76,13 +76,13 @@ Publishing is **not** done by agents unless the user explicitly asks.
 
 ```bash
 just version                 # apply pending changesets
-# commit the version bump
-# then run the Release workflow per crate (trusted publishing only)
+# commit and push the version bump
+just release basis-points    # then wrapped-decimal, then solana-math
 ```
 
 Release order: `basis-points` → `wrapped-decimal` → `solana-math`.
 
-Tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The **Release** workflow (`.github/workflows/release.yaml`) publishes to crates.io via [trusted publishing](https://crates.io/docs/trusted-publishing), then tags and creates the GitHub release (`workflow_dispatch`, one crate at a time). Do not publish with a crates.io API token.
+`just release <crate>` pushes a tag `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The **Release** workflow (`.github/workflows/release.yaml`) runs on that tag push, publishes to crates.io via [trusted publishing](https://crates.io/docs/trusted-publishing), and creates the GitHub release. Do not publish with a crates.io API token.
 
 ## Git
 
