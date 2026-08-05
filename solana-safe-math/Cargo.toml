@@ -28,11 +28,13 @@ i64 = []
 i128 = []
 decimal = ["dep:rust_decimal"]
 basis-points = ["dep:basis-points"]
+zeropod = ["dep:zeropod"]
 
 [dependencies]
 rust_decimal = { workspace = true, optional = true }
 basis-points = { workspace = true, optional = true }
 thiserror = { workspace = true }
+zeropod = { workspace = true, optional = true }
 
 [dev-dependencies]
 husky-rs = { workspace = true }

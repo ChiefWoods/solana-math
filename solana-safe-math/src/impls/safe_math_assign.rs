@@ -1,43 +1,53 @@
 use crate::{SafeMath, error::SafeMathError};
 
-pub trait SafeMathAssign: Sized {
-    fn safe_add_assign(&mut self, rhs: Self) -> Result<(), SafeMathError>;
-    fn safe_sub_assign(&mut self, rhs: Self) -> Result<(), SafeMathError>;
-    fn safe_mul_assign(&mut self, rhs: Self) -> Result<(), SafeMathError>;
-    fn safe_div_assign(&mut self, rhs: Self) -> Result<(), SafeMathError>;
+pub trait SafeMathAssign<Rhs = Self>: Sized {
+    fn safe_add_assign(&mut self, rhs: Rhs) -> Result<(), SafeMathError>;
+    fn safe_sub_assign(&mut self, rhs: Rhs) -> Result<(), SafeMathError>;
+    fn safe_mul_assign(&mut self, rhs: Rhs) -> Result<(), SafeMathError>;
+    fn safe_div_assign(&mut self, rhs: Rhs) -> Result<(), SafeMathError>;
 }
 
 macro_rules! math_assign_impl {
     ($t:ty) => {
-        impl SafeMathAssign for $t {
+        math_assign_impl!($t, $t);
+    };
+    ($t:ty, $rhs:ty) => {
+        impl SafeMathAssign<$rhs> for $t {
             #[track_caller]
             #[inline(always)]
-            fn safe_add_assign(&mut self, rhs: $t) -> Result<(), SafeMathError> {
+            fn safe_add_assign(&mut self, rhs: $rhs) -> Result<(), SafeMathError> {
                 *self = self.safe_add(rhs)?;
                 Ok(())
             }
 
             #[track_caller]
             #[inline(always)]
-            fn safe_sub_assign(&mut self, rhs: $t) -> Result<(), SafeMathError> {
+            fn safe_sub_assign(&mut self, rhs: $rhs) -> Result<(), SafeMathError> {
                 *self = self.safe_sub(rhs)?;
                 Ok(())
             }
 
             #[track_caller]
             #[inline(always)]
-            fn safe_mul_assign(&mut self, rhs: $t) -> Result<(), SafeMathError> {
+            fn safe_mul_assign(&mut self, rhs: $rhs) -> Result<(), SafeMathError> {
                 *self = self.safe_mul(rhs)?;
                 Ok(())
             }
 
             #[track_caller]
             #[inline(always)]
-            fn safe_div_assign(&mut self, rhs: $t) -> Result<(), SafeMathError> {
+            fn safe_div_assign(&mut self, rhs: $rhs) -> Result<(), SafeMathError> {
                 *self = self.safe_div(rhs)?;
                 Ok(())
             }
         }
+    };
+}
+
+macro_rules! zeropod_math_assign_impl {
+    ($pod:ty, $native:ty) => {
+        math_assign_impl!($pod);
+        math_assign_impl!($pod, $native);
     };
 }
 
@@ -65,3 +75,38 @@ math_assign_impl!(i128);
 math_assign_impl!(rust_decimal::Decimal);
 #[cfg(feature = "basis-points")]
 math_assign_impl!(basis_points::BasisPoints);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodU16, u16);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodU32, u32);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodU64, u64);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodU128, u128);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodI16, i16);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodI32, i32);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodI64, i64);
+#[cfg(feature = "zeropod")]
+zeropod_math_assign_impl!(zeropod::pod::PodI128, i128);
+
+#[cfg(all(test, feature = "zeropod"))]
+mod zeropod_tests {
+    use zeropod::pod::PodU64;
+
+    use super::SafeMathAssign;
+    use crate::SafeMathError;
+
+    #[test]
+    fn pod_numeric_safe_math_assign_updates_only_on_success() {
+        let mut value = PodU64::from(40);
+        assert_eq!(value.safe_add_assign(2_u64), Ok(()));
+        assert_eq!(value, PodU64::from(42));
+
+        let mut max = PodU64::MAX;
+        assert_eq!(max.safe_add_assign(1_u64), Err(SafeMathError::Overflow));
+        assert_eq!(max, PodU64::MAX);
+    }
+}

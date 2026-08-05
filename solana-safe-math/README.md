@@ -23,6 +23,7 @@ Numeric trait impls are gated by features:
 - Signed: `i8`, `i16`, `i32`, `i64`, `i128`
 - `decimal`: enable `rust_decimal::Decimal` support
 - `basis-points`: enable `basis_points::BasisPoints` support
+- `zeropod`: enable `zeropod` support for Quasar
 
 ## Example
 
