@@ -8,9 +8,9 @@ Rust workspace of small, dependency-light math crates for Solana programs and of
 
 | Crate | Path | Role |
 |-------|------|------|
-| `basis-points` | `basis-points/` | Validated `BasisPoints` type (`0..=10_000`) |
-| `wrapped-decimal` | `wrapped-decimal/` | POD-safe 16-byte `Decimal` wrapper |
-| `solana-math` | `solana-math/` | Checked arithmetic traits (no panics) |
+| `basis-points` | `crates/basis-points/` | Validated `BasisPoints` type (`0..=10_000`) |
+| `wrapped-decimal` | `crates/wrapped-decimal/` | POD-safe 16-byte `Decimal` wrapper |
+| `solana-math` | `crates/solana-math/` | Checked arithmetic traits (no panics) |
 
 Workspace dependency order: `basis-points` → `wrapped-decimal` → `solana-math`.
 
@@ -94,9 +94,9 @@ Optional tags use the form `crate-name@vX.Y.Z` (e.g. `basis-points@v0.3.2`). The
 ## Key paths
 
 ```
-basis-points/          # crate + CHANGELOG.md
-wrapped-decimal/
-solana-math/
+crates/basis-points/   # crate + CHANGELOG.md
+crates/wrapped-decimal/
+crates/solana-math/
 .changeset/            # pending changeset files
 .github/workflows/     # tests.yml, github-release.yml
 docs/updating-changelogs.md

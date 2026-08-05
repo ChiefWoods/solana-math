@@ -54,8 +54,8 @@ github-release crate:
     #!/usr/bin/env bash
     set -euo pipefail
     crate="{{crate}}"
-    manifest="${crate}/Cargo.toml"
-    changelog="${crate}/CHANGELOG.md"
+    manifest="crates/${crate}/Cargo.toml"
+    changelog="crates/${crate}/CHANGELOG.md"
     name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
     version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
     new_tag="${name}@v${version}"

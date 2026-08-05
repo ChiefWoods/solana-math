@@ -44,7 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           crate="${{ inputs.crate }}"
-          manifest="${crate}/Cargo.toml"
+          manifest="crates/${crate}/Cargo.toml"
           name=$(grep -m1 '^name = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
           version=$(grep -m1 '^version = ' "$manifest" | sed 's/.*"\(.*\)".*/\1/')
           new_tag="${name}@v${version}"
@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           version="${{ steps.meta.outputs.crate_version }}"
-          changelog="${{ inputs.crate }}/CHANGELOG.md"
+          changelog="crates/${{ inputs.crate }}/CHANGELOG.md"
           {
             echo "## What's new"
             echo ""
