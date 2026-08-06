@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.6] - 2026-08-06
+### Changed
+
+- Depend on git \`quasar-lang\` (master) so optional Quasar integrations can enable \`idl-build\`.
+
 ## [0.1.5] - 2026-08-06
 ### Added
 
