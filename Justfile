@@ -46,7 +46,7 @@ changeset-verify *args:
 version *args:
     cargo changeset release {{args}}
 
-# Tag current Cargo.toml version and push (triggers Release workflow).
+# Tag current Cargo.toml version (push the tag to trigger Release workflow).
 # Usage: `just release basis-points` (order: basis-points → wrapped-decimal → solana-math)
 release crate:
     #!/usr/bin/env bash
@@ -63,5 +63,4 @@ release crate:
     fi
 
     git tag -a "$tag" -m "Publish ${name} v${version}"
-    git push origin "refs/tags/${tag}"
-    echo "Pushed ${tag}; Release workflow will publish to crates.io and create the GitHub release."
+    echo "Created ${tag}. Push with: git push origin refs/tags/${tag}"
