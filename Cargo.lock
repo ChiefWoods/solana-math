@@ -1607,7 +1607,7 @@ dependencies = [
 
 [[package]]
 name = "solana-math"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anchor-lang",
  "basis-points",

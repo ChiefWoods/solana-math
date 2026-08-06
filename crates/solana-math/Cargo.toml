@@ -1,6 +1,6 @@
 [package]
 name = "solana-math"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2024"
 description = "Checked arithmetic and conversion traits for Solana-oriented Rust."
 license = "MIT"

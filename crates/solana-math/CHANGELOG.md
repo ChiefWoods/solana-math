@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.5] - 2026-08-06
+### Added
+
+- Add optional `anchor` and `quasar` features with `SafeMathError` → `ProgramError` conversions. The former `zeropod` feature is folded into `quasar`.
+
 ## [0.1.4] - 2026-08-05
 ### Added
 
