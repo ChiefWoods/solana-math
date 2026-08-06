@@ -37,7 +37,7 @@ just version        # bump versions + changelogs from pending changesets
 cargo fmt --all -- --check   # what CI / pre-commit runs
 ```
 
-CI (`.github/workflows/tests.yml`) runs: check → fmt check → clippy → docs → test, all with `--all-features --locked`.
+CI (`.github/workflows/ci.yml`) runs: check → fmt check → clippy → docs → test, all with `--all-features --locked`.
 
 Local Git hooks (`.husky/pre-commit`) run check, clippy, and fmt check. Set `NO_HUSKY_HOOKS=1` to skip hooks in automation.
 
@@ -97,7 +97,7 @@ crates/basis-points/   # crate + CHANGELOG.md
 crates/wrapped-decimal/
 crates/solana-math/
 .changeset/            # pending changeset files
-.github/workflows/     # tests.yml, release.yaml
+.github/workflows/     # ci.yml, release.yaml
 docs/updating-changelogs.md
 Justfile               # workspace + changeset tasks
 ```
