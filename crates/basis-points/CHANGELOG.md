@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.3] - 2026-08-06
+### Added
+
+- Add optional `quasar` feature with `BasisPointsError` → `ProgramError` conversion. Fold `idl-build` into `anchor` / `quasar` (`anchor-lang/idl-build`, `quasar-lang/idl-build`).
+
 ## [0.3.2] - 2026-06-08
 - Bumped `anchor-lang` to 1.0.2.
 - Bumped `rust_decimal` to 1.42.0.
