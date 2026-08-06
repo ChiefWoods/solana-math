@@ -13,7 +13,7 @@ resolver = "2"
 
 [workspace.dependencies]
 anchor-lang = { version = "=1.0.2" }
-basis-points = { version = "0.3.3", path = "crates/basis-points" }
+basis-points = { version = "0.4.0", path = "crates/basis-points" }
 brine-fp = { version = "0.3.0" }
 bytemuck = { version = "1.20.0", features = ["derive", "min_const_generics"] }
 codama = { version = "0.9.2" }

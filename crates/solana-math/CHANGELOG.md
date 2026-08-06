@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0] - 2026-08-06
+### Added
+
+- Add brine-fp support
+
 ## [0.1.6] - 2026-08-06
 ### Changed
 
