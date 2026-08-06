@@ -27,11 +27,14 @@ i64 = []
 i128 = []
 decimal = ["dep:rust_decimal"]
 basis-points = ["dep:basis-points"]
-zeropod = ["dep:zeropod"]
+anchor = ["dep:anchor-lang"]
+quasar = ["dep:quasar-lang", "dep:zeropod"]
 
 [dependencies]
+anchor-lang = { workspace = true, optional = true }
 rust_decimal = { workspace = true, optional = true }
 basis-points = { workspace = true, optional = true }
+quasar-lang = { workspace = true, optional = true }
 thiserror = { workspace = true }
 zeropod = { workspace = true, optional = true }
 

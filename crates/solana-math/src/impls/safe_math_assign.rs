@@ -44,7 +44,7 @@ macro_rules! math_assign_impl {
     };
 }
 
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 macro_rules! zeropod_math_assign_impl {
     ($pod:ty, $native:ty) => {
         math_assign_impl!($pod);
@@ -76,24 +76,24 @@ math_assign_impl!(i128);
 math_assign_impl!(rust_decimal::Decimal);
 #[cfg(feature = "basis-points")]
 math_assign_impl!(basis_points::BasisPoints);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodU16, u16);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodU32, u32);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodU64, u64);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodU128, u128);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodI16, i16);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodI32, i32);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodI64, i64);
-#[cfg(feature = "zeropod")]
+#[cfg(feature = "quasar")]
 zeropod_math_assign_impl!(zeropod::pod::PodI128, i128);
 
-#[cfg(all(test, feature = "zeropod"))]
+#[cfg(all(test, feature = "quasar"))]
 mod zeropod_tests {
     use zeropod::pod::PodU64;
 
