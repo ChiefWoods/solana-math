@@ -22,6 +22,7 @@ fmt:
     cargo fmt --all
 
 doc:
+    cargo clean --doc
     cargo doc --workspace --no-deps --all-features --open
 
 # --- cargo-changeset (install: cargo install cargo-changeset) ---
