@@ -18,7 +18,9 @@ cargo add basis-points
 ## Features
 
 - `decimal`: enable `rust_decimal` conversions
-- `anchor`: enable Anchor serialization/IDL traits
+- `anchor`: enable Anchor serialization/IDL traits and convert `BasisPointsError` into Anchor `ProgramError`
+- `quasar`: enable Quasar IDL build support and convert `BasisPointsError` into Quasar `ProgramError`
+- `codama`: enable `CodamaType` derive support
 
 ## Example
 

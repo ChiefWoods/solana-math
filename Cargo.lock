@@ -255,6 +255,7 @@ dependencies = [
  "bytemuck",
  "codama",
  "husky-rs",
+ "quasar-lang",
  "rust_decimal",
  "thiserror 2.0.18",
 ]
