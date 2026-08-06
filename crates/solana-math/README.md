@@ -23,6 +23,7 @@ Numeric trait impls are gated by features:
 - Signed: `i8`, `i16`, `i32`, `i64`, `i128`
 - `decimal`: enable `rust_decimal::Decimal` support
 - `basis-points`: enable `basis_points::BasisPoints` support
+- `brine-fp`: enable `brine_fp::{UnsignedNumeric, SignedNumeric}` support
 - `anchor`: convert `SafeMathError` into Anchor `ProgramError` / `Error`
 - `quasar`: convert `SafeMathError` into Quasar `ProgramError`, and enable `zeropod` POD integer safe math
 

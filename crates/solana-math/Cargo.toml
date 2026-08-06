@@ -27,6 +27,7 @@ i64 = []
 i128 = []
 decimal = ["dep:rust_decimal"]
 basis-points = ["dep:basis-points"]
+brine-fp = ["dep:brine-fp"]
 anchor = ["dep:anchor-lang"]
 quasar = ["dep:quasar-lang", "dep:zeropod"]
 
@@ -34,6 +35,7 @@ quasar = ["dep:quasar-lang", "dep:zeropod"]
 anchor-lang = { workspace = true, optional = true }
 rust_decimal = { workspace = true, optional = true }
 basis-points = { workspace = true, optional = true }
+brine-fp = { workspace = true, optional = true }
 quasar-lang = { workspace = true, optional = true }
 thiserror = { workspace = true }
 zeropod = { workspace = true, optional = true }

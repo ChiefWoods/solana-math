@@ -102,6 +102,72 @@ math_impl!(i128);
 math_impl!(rust_decimal::Decimal);
 #[cfg(feature = "basis-points")]
 math_impl!(basis_points::BasisPoints);
+
+/// `brine-fp` checked ops take `&Self`, unlike integer/`Decimal` `checked_*`.
+#[cfg(feature = "brine-fp")]
+macro_rules! brine_math_impl {
+    ($t:ty) => {
+        impl SafeMath for $t {
+            #[track_caller]
+            #[inline(always)]
+            fn safe_add(self, rhs: $t) -> Result<$t, SafeMathError> {
+                match self.checked_add(&rhs) {
+                    Some(result) => Ok(result),
+                    None => {
+                        let caller = Location::caller();
+                        println!("Math overflow at {}:{}", caller.file(), caller.line());
+                        Err(SafeMathError::Overflow)
+                    }
+                }
+            }
+
+            #[track_caller]
+            #[inline(always)]
+            fn safe_sub(self, rhs: $t) -> Result<$t, SafeMathError> {
+                match self.checked_sub(&rhs) {
+                    Some(result) => Ok(result),
+                    None => {
+                        let caller = Location::caller();
+                        println!("Math underflow at {}:{}", caller.file(), caller.line());
+                        Err(SafeMathError::Underflow)
+                    }
+                }
+            }
+
+            #[track_caller]
+            #[inline(always)]
+            fn safe_mul(self, rhs: $t) -> Result<$t, SafeMathError> {
+                match self.checked_mul(&rhs) {
+                    Some(result) => Ok(result),
+                    None => {
+                        let caller = Location::caller();
+                        println!("Math overflow at {}:{}", caller.file(), caller.line());
+                        Err(SafeMathError::Overflow)
+                    }
+                }
+            }
+
+            #[track_caller]
+            #[inline(always)]
+            fn safe_div(self, rhs: $t) -> Result<$t, SafeMathError> {
+                match self.checked_div(&rhs) {
+                    Some(result) => Ok(result),
+                    None => {
+                        let caller = Location::caller();
+                        println!("Division error at {}:{}", caller.file(), caller.line());
+                        Err(SafeMathError::Overflow)
+                    }
+                }
+            }
+        }
+    };
+}
+
+#[cfg(feature = "brine-fp")]
+brine_math_impl!(brine_fp::UnsignedNumeric);
+#[cfg(feature = "brine-fp")]
+brine_math_impl!(brine_fp::SignedNumeric);
+
 #[cfg(feature = "quasar")]
 zeropod_math_impl!(zeropod::pod::PodU16, u16);
 #[cfg(feature = "quasar")]
@@ -118,6 +184,46 @@ zeropod_math_impl!(zeropod::pod::PodI32, i32);
 zeropod_math_impl!(zeropod::pod::PodI64, i64);
 #[cfg(feature = "quasar")]
 zeropod_math_impl!(zeropod::pod::PodI128, i128);
+
+#[cfg(all(test, feature = "brine-fp"))]
+mod brine_fp_tests {
+    use brine_fp::{SignedNumeric, UnsignedNumeric};
+
+    use super::SafeMath;
+    use crate::SafeMathError;
+
+    #[test]
+    fn unsigned_numeric_safe_math_returns_checked_results() {
+        let a = UnsignedNumeric::new(40);
+        let b = UnsignedNumeric::new(2);
+        assert_eq!(a.clone().safe_add(b.clone()), Ok(UnsignedNumeric::new(42)));
+        assert_eq!(a.clone().safe_mul(b.clone()), Ok(UnsignedNumeric::new(80)));
+        assert_eq!(a.clone().safe_div(b.clone()), Ok(UnsignedNumeric::new(20)));
+        assert_eq!(a.safe_sub(b), Ok(UnsignedNumeric::new(38)));
+    }
+
+    #[test]
+    fn signed_numeric_safe_math_returns_checked_results() {
+        let a = SignedNumeric::new(40);
+        let b = SignedNumeric::new(2);
+        assert_eq!(a.clone().safe_add(b.clone()), Ok(SignedNumeric::new(42)));
+        assert_eq!(a.clone().safe_mul(b.clone()), Ok(SignedNumeric::new(80)));
+        assert_eq!(a.clone().safe_div(b.clone()), Ok(SignedNumeric::new(20)));
+        assert_eq!(a.safe_sub(b), Ok(SignedNumeric::new(38)));
+    }
+
+    #[test]
+    fn unsigned_numeric_safe_math_returns_boundary_errors() {
+        assert_eq!(
+            UnsignedNumeric::new(1).safe_sub(UnsignedNumeric::new(2)),
+            Err(SafeMathError::Underflow)
+        );
+        assert_eq!(
+            UnsignedNumeric::new(1).safe_div(UnsignedNumeric::zero()),
+            Err(SafeMathError::Overflow)
+        );
+    }
+}
 
 #[cfg(all(test, feature = "quasar"))]
 mod zeropod_tests {
