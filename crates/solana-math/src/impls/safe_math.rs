@@ -1,5 +1,3 @@
-use std::panic::Location;
-
 use crate::error::SafeMathError;
 
 pub trait SafeMath<Rhs = Self>: Sized {
@@ -21,8 +19,7 @@ macro_rules! math_impl {
                 match self.checked_add(rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Math overflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Math overflow");
                         Err(SafeMathError::Overflow)
                     }
                 }
@@ -34,8 +31,7 @@ macro_rules! math_impl {
                 match self.checked_sub(rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Math underflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Math underflow");
                         Err(SafeMathError::Underflow)
                     }
                 }
@@ -47,8 +43,7 @@ macro_rules! math_impl {
                 match self.checked_mul(rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Math overflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Math overflow");
                         Err(SafeMathError::Overflow)
                     }
                 }
@@ -60,8 +55,7 @@ macro_rules! math_impl {
                 match self.checked_div(rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Division error at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Division error");
                         Err(SafeMathError::Overflow)
                     }
                 }
@@ -114,8 +108,7 @@ macro_rules! brine_math_impl {
                 match self.checked_add(&rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Math overflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Math overflow");
                         Err(SafeMathError::Overflow)
                     }
                 }
@@ -127,8 +120,7 @@ macro_rules! brine_math_impl {
                 match self.checked_sub(&rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Math underflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Math underflow");
                         Err(SafeMathError::Underflow)
                     }
                 }
@@ -140,8 +132,7 @@ macro_rules! brine_math_impl {
                 match self.checked_mul(&rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Math overflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Math overflow");
                         Err(SafeMathError::Overflow)
                     }
                 }
@@ -153,8 +144,7 @@ macro_rules! brine_math_impl {
                 match self.checked_div(&rhs) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Division error at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Division error");
                         Err(SafeMathError::Overflow)
                     }
                 }

@@ -15,7 +15,8 @@ include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE*", "CHANGELOG.md"]
 
 [features]
 default = []
-anchor = ["dep:anchor-lang"]
+std = []
+anchor = ["std", "dep:anchor-lang"]
 codama = ["dep:codama"]
 idl-build = ["anchor", "anchor-lang/idl-build"]
 

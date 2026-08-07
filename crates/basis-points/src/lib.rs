@@ -7,6 +7,8 @@
 //! [`BasisPoints`] converts to [`Decimal`] as a unit fraction in `0..=1`
 //! (for example, `2500` bps becomes `0.25`).
 
+#![cfg_attr(not(any(test, feature = "std")), no_std)]
+
 use bytemuck::{Pod, Zeroable};
 #[cfg(feature = "codama")]
 use codama::CodamaType;

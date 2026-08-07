@@ -1,5 +1,3 @@
-use std::panic::Location;
-
 use crate::error::SafeMathError;
 
 pub trait SafeConvert {
@@ -13,29 +11,25 @@ macro_rules! convert_impl {
             #[track_caller]
             #[inline(always)]
             fn safe_to_u16(self) -> Result<u16, SafeMathError> {
-                u16::try_from(self).map_err(|_| {
-                    let caller = Location::caller();
-                    println!(
-                        "Conversion to u16 failed at {}:{}",
-                        caller.file(),
-                        caller.line()
-                    );
-                    SafeMathError::Overflow
-                })
+                match u16::try_from(self) {
+                    Ok(value) => Ok(value),
+                    Err(_) => {
+                        crate::debug_log::log("Conversion to u16 failed");
+                        Err(SafeMathError::Overflow)
+                    }
+                }
             }
 
             #[track_caller]
             #[inline(always)]
             fn safe_to_u64(self) -> Result<u64, SafeMathError> {
-                u64::try_from(self).map_err(|_| {
-                    let caller = Location::caller();
-                    println!(
-                        "Conversion to u64 failed at {}:{}",
-                        caller.file(),
-                        caller.line()
-                    );
-                    SafeMathError::Overflow
-                })
+                match u64::try_from(self) {
+                    Ok(value) => Ok(value),
+                    Err(_) => {
+                        crate::debug_log::log("Conversion to u64 failed");
+                        Err(SafeMathError::Overflow)
+                    }
+                }
             }
         }
     };

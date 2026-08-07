@@ -1,5 +1,3 @@
-use std::panic::Location;
-
 use crate::error::SafeMathError;
 
 pub trait SafePow: Sized {
@@ -15,8 +13,7 @@ macro_rules! pow_impl {
                 match self.checked_pow(exp) {
                     Some(result) => Ok(result),
                     None => {
-                        let caller = Location::caller();
-                        println!("Pow overflow at {}:{}", caller.file(), caller.line());
+                        crate::debug_log::log("Pow overflow");
                         Err(SafeMathError::Overflow)
                     }
                 }

@@ -14,12 +14,12 @@ resolver = "2"
 [workspace.dependencies]
 anchor-lang = { version = "=1.0.2" }
 basis-points = { version = "0.4.0", path = "crates/basis-points" }
-brine-fp = { version = "0.3.0" }
+brine-fp = { version = "0.3.0", default-features = false }
 bytemuck = { version = "1.20.0", features = ["derive", "min_const_generics"] }
 codama = { version = "0.9.2" }
 quasar-lang = { version = "0.0.0" }
 rust_decimal = { version = "1.42.0", features = ["maths"] }
-thiserror = { version = "2.0.18" }
+thiserror = { version = "2.0.18", default-features = false }
 husky-rs = { version = "0.3.3" }
 zeropod = { version = "=0.3.3" }
 
