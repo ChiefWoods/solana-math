@@ -331,9 +331,9 @@ dependencies = [
 
 [[package]]
 name = "brine-fp"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75fb3ae82442ac9b47f3062fa725b5c904dc5115a96872d7c6721f95095d105d"
+checksum = "1cabd459af1e4e9c9f61a0202fb32cc3bf74d5c5f59fa0c355fe2449251ccb9f"
 dependencies = [
  "uint",
 ]

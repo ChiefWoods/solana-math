@@ -14,7 +14,7 @@ resolver = "2"
 [workspace.dependencies]
 anchor-lang = { version = "=1.0.2" }
 basis-points = { version = "0.4.1", path = "crates/basis-points" }
-brine-fp = { version = "0.3.0", default-features = false }
+brine-fp = { version = "0.3.1", default-features = false }
 bytemuck = { version = "1.20.0", features = ["derive", "min_const_generics"] }
 codama = { version = "0.9.2" }
 quasar-lang = { version = "0.0.0" }
