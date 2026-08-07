@@ -249,7 +249,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "basis-points"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anchor-lang",
  "bytemuck",
@@ -1635,7 +1635,7 @@ dependencies = [
 
 [[package]]
 name = "solana-math"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "anchor-lang",
  "basis-points",
@@ -2280,7 +2280,7 @@ dependencies = [
 
 [[package]]
 name = "wrapped-decimal"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anchor-lang",
  "bytemuck",

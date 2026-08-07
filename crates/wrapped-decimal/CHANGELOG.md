@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.6] - 2026-08-07
+### Fixed
+
+- Use no-std by default
+
 ## [0.1.5] - 2026-06-08
 - Bumped `anchor-lang` to 1.0.2.
 - Bumped `rust_decimal` to 1.42.0.

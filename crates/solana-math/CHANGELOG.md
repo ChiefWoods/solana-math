@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.1] - 2026-08-07
+### Fixed
+
+- Use no-std by default
+
 ## [0.2.0] - 2026-08-06
 ### Added
 
