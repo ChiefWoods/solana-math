@@ -1,6 +1,17 @@
 name: CI
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - Cargo.toml
+      - Cargo.lock
+      - crates/basis-points/Cargo.toml
+      - crates/basis-points/src/**
+      - crates/wrapped-decimal/Cargo.toml
+      - crates/wrapped-decimal/src/**
+      - crates/solana-math/Cargo.toml
+      - crates/solana-math/src/**
   push:
     branches: [main]
     paths:
