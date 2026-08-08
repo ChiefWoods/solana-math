@@ -7,6 +7,7 @@ on:
       - 'basis-points@v*'
       - 'wrapped-decimal@v*'
       - 'solana-math@v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
