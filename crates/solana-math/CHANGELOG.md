@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0] - 2026-09-06
+### Added
+
+- Add SafeConvert for primitives and new ruint support
+
 ## [0.2.2] - 2026-08-08
 ### Changed
 
