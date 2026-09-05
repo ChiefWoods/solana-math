@@ -12,7 +12,7 @@ default-members = [
 resolver = "2"
 
 [workspace.dependencies]
-anchor-lang = { version = "=1.0.2" }
+anchor-lang = { version = "1.2.0" }
 basis-points = { version = "0.4.1", path = "crates/basis-points" }
 brine-fp = { version = "0.3.1", default-features = false }
 bytemuck = { version = "1.20.0", features = ["derive", "min_const_generics"] }
