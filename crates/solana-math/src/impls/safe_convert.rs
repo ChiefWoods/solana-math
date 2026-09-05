@@ -35,7 +35,11 @@ macro_rules! convert_impl {
     };
 }
 
+#[cfg(feature = "u64")]
+convert_impl!(u64);
 #[cfg(feature = "u128")]
 convert_impl!(u128);
+#[cfg(feature = "i64")]
+convert_impl!(i64);
 #[cfg(feature = "i128")]
 convert_impl!(i128);
