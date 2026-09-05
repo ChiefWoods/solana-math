@@ -82,6 +82,10 @@ math_impl!(u32);
 math_impl!(u64);
 #[cfg(feature = "u128")]
 math_impl!(u128);
+#[cfg(feature = "u256")]
+math_impl!(ruint::aliases::U256);
+#[cfg(feature = "u512")]
+math_impl!(ruint::aliases::U512);
 #[cfg(feature = "i8")]
 math_impl!(i8);
 #[cfg(feature = "i16")]
@@ -251,5 +255,56 @@ mod zeropod_tests {
             PodU64::from(1).safe_div(0_u64),
             Err(SafeMathError::Overflow)
         );
+    }
+}
+
+#[cfg(all(test, feature = "u256"))]
+mod u256_tests {
+    use ruint::aliases::U256;
+
+    use super::SafeMath;
+    use crate::SafeMathError;
+
+    #[test]
+    fn u256_safe_math_returns_checked_results() {
+        let a = U256::from(40u8);
+        let b = U256::from(2u8);
+        assert_eq!(a.safe_add(b), Ok(U256::from(42u8)));
+        assert_eq!(a.safe_mul(b), Ok(U256::from(80u8)));
+        assert_eq!(a.safe_div(b), Ok(U256::from(20u8)));
+        assert_eq!(a.safe_sub(b), Ok(U256::from(38u8)));
+    }
+
+    #[test]
+    fn u256_safe_math_returns_boundary_errors() {
+        assert_eq!(
+            U256::MAX.safe_add(U256::from(1u8)),
+            Err(SafeMathError::Overflow)
+        );
+        assert_eq!(
+            U256::ZERO.safe_sub(U256::from(1u8)),
+            Err(SafeMathError::Underflow)
+        );
+        assert_eq!(
+            U256::from(1u8).safe_div(U256::ZERO),
+            Err(SafeMathError::Overflow)
+        );
+    }
+}
+
+#[cfg(all(test, feature = "u512"))]
+mod u512_tests {
+    use ruint::aliases::U512;
+
+    use super::SafeMath;
+
+    #[test]
+    fn u512_safe_math_returns_checked_results() {
+        let a = U512::from(40u8);
+        let b = U512::from(2u8);
+        assert_eq!(a.safe_add(b), Ok(U512::from(42u8)));
+        assert_eq!(a.safe_mul(b), Ok(U512::from(80u8)));
+        assert_eq!(a.safe_div(b), Ok(U512::from(20u8)));
+        assert_eq!(a.safe_sub(b), Ok(U512::from(38u8)));
     }
 }

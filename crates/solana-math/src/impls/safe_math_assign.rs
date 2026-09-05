@@ -62,6 +62,10 @@ math_assign_impl!(u32);
 math_assign_impl!(u64);
 #[cfg(feature = "u128")]
 math_assign_impl!(u128);
+#[cfg(feature = "u256")]
+math_assign_impl!(ruint::aliases::U256);
+#[cfg(feature = "u512")]
+math_assign_impl!(ruint::aliases::U512);
 #[cfg(feature = "i8")]
 math_assign_impl!(i8);
 #[cfg(feature = "i16")]
@@ -174,5 +178,27 @@ mod zeropod_tests {
         let mut max = PodU64::MAX;
         assert_eq!(max.safe_add_assign(1_u64), Err(SafeMathError::Overflow));
         assert_eq!(max, PodU64::MAX);
+    }
+}
+
+#[cfg(all(test, feature = "u256"))]
+mod u256_tests {
+    use ruint::aliases::U256;
+
+    use super::SafeMathAssign;
+    use crate::SafeMathError;
+
+    #[test]
+    fn u256_safe_math_assign_updates_only_on_success() {
+        let mut value = U256::from(40u8);
+        assert_eq!(value.safe_add_assign(U256::from(2u8)), Ok(()));
+        assert_eq!(value, U256::from(42u8));
+
+        let mut max = U256::MAX;
+        assert_eq!(
+            max.safe_add_assign(U256::from(1u8)),
+            Err(SafeMathError::Overflow)
+        );
+        assert_eq!(max, U256::MAX);
     }
 }

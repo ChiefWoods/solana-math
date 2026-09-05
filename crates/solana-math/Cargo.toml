@@ -20,6 +20,8 @@ u16 = []
 u32 = []
 u64 = []
 u128 = []
+u256 = ["dep:ruint"]
+u512 = ["dep:ruint"]
 i8 = []
 i16 = []
 i32 = []
@@ -39,6 +41,7 @@ rust_decimal = { workspace = true, optional = true }
 basis-points = { workspace = true, optional = true }
 brine-fp = { workspace = true, optional = true }
 quasar-lang = { workspace = true, optional = true }
+ruint = { workspace = true, optional = true }
 thiserror = { workspace = true }
 zeropod = { workspace = true, optional = true }
 

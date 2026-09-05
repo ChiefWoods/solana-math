@@ -20,6 +20,7 @@ cargo add solana-math
 Numeric trait impls are gated by features:
 
 - Unsigned: `u8`, `u16`, `u32`, `u64`, `u128`
+- `u256`, `u512`: enable `ruint::aliases::{U256, U512}` support
 - Signed: `i8`, `i16`, `i32`, `i64`, `i128`
 - `decimal`: enable `rust_decimal::Decimal` support
 - `basis-points`: enable `basis_points::BasisPoints` support
