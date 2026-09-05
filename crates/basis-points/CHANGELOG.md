@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.2] - 2026-09-06
+### Changed
+
+- Bumped anchor-lang
+
 ## [0.4.1] - 2026-08-07
 ### Fixed
 
