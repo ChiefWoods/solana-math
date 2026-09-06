@@ -70,12 +70,55 @@ jobs:
 
           echo "Releasing ${name} ${version} from tag ${tag}"
 
+      - name: Check if version is already on crates.io
+        id: cratesio
+        run: |
+          set -euo pipefail
+          crate="${{ steps.meta.outputs.crate_name }}"
+          version="${{ steps.meta.outputs.crate_version }}"
+          url="https://crates.io/api/v1/crates/${crate}/${version}"
+          http_code=$(curl -sS -o /tmp/cratesio-version.json -w "%{http_code}" \
+            -H "User-Agent: ${GITHUB_REPOSITORY} release workflow (${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY})" \
+            -H "Accept: application/json" \
+            "$url")
+          case "$http_code" in
+            200)
+              echo "skip_publish=true" >> "$GITHUB_OUTPUT"
+              echo "Version ${crate}@${version} is already on crates.io; skipping publish"
+              ;;
+            404)
+              echo "skip_publish=false" >> "$GITHUB_OUTPUT"
+              echo "Version ${crate}@${version} is not on crates.io; will publish"
+              ;;
+            *)
+              echo "::error::Unexpected HTTP ${http_code} from ${url}"
+              cat /tmp/cratesio-version.json || true
+              exit 1
+              ;;
+          esac
+
       - name: Authenticate with crates.io
         id: auth
+        if: steps.cratesio.outputs.skip_publish != 'true'
         uses: rust-lang/crates-io-auth-action@v1
 
       - name: Publish to crates.io
-        run: cargo publish -p "${{ steps.meta.outputs.crate }}" --locked
+        if: steps.cratesio.outputs.skip_publish != 'true'
+        run: |
+          set -euo pipefail
+          set +e
+          output=$(cargo publish -p "${{ steps.meta.outputs.crate }}" --locked 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          if [[ "$status" -eq 0 ]]; then
+            exit 0
+          fi
+          if printf '%s\n' "$output" | grep -qiE 'already exists'; then
+            echo "Version already on crates.io; treating publish as no-op"
+            exit 0
+          fi
+          exit "$status"
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
 
