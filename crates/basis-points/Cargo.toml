@@ -1,6 +1,6 @@
 [package]
 name = "basis-points"
-version = "0.4.2"
+version = "0.4.3"
 edition = "2021"
 description = "Validated basis-points type with optional Decimal and Anchor support."
 license = "MIT"

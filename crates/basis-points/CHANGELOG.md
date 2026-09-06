@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.3] - 2026-09-07
+### Changed
+
+- Disable default for rust-decimal
+
 ## [0.4.2] - 2026-09-06
 ### Changed
 
