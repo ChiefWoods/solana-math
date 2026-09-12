@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.0] - 2026-09-12
+### Added
+
+- Add hylo-fix support
+
 ## [0.3.1] - 2026-09-07
 ### Changed
 
