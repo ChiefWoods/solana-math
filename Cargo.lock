@@ -773,6 +773,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "059c31d7d36c43fe39d89e55711858b4da8be7eb6dabac23c7289b1a19489406"
 
 [[package]]
+name = "fix"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "915708177c784db10dbbeccb18d302f77a30c8443b45d0e4494055f26c23cbd0"
+dependencies = [
+ "typenum",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -821,20 +830,6 @@ version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "707114b52a152fa7bdb290cd7cd5912d9467273b6d74e21b8d81aca1f8533f6b"
 dependencies = [
- "typenum",
-]
-
-[[package]]
-name = "hylo-fix"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4026a27a20485d36c85099fcd47d63c3d3b1c2b884631d6ec174fa30bfa810cb"
-dependencies = [
- "anyhow",
- "muldiv",
- "num-traits",
- "paste",
- "serde",
  "typenum",
 ]
 
@@ -900,12 +895,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8ca58f447f06ed17d5fc4043ce1b10dd205e060fb3ce5b979b8ed8e59ff3f79"
 
 [[package]]
-name = "muldiv"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
-
-[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -942,12 +931,6 @@ dependencies = [
  "smallvec",
  "windows-link",
 ]
-
-[[package]]
-name = "paste"
-version = "1.0.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
 name = "pastey"
@@ -1485,8 +1468,9 @@ dependencies = [
  "anchor-lang",
  "basis-points",
  "brine-fp",
+ "fix",
  "husky-rs",
- "hylo-fix",
+ "num-traits",
  "quasar-lang",
  "ruint",
  "rust_decimal",

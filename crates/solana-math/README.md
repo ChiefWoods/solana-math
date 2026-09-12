@@ -23,7 +23,7 @@ Numeric trait impls are gated by features:
 - `u256`, `u512`: enable `ruint::aliases::{U256, U512}` support
 - Signed: `i8`, `i16`, `i32`, `i64`, `i128`
 - `decimal`: enable `rust_decimal::Decimal` support
-- `fix`: enable `hylo-fix` checked arithmetic traits for `fix::Fix`
+- `fix`: enable no-std `fix::Fix` support (requires nightly Rust)
 - `basis-points`: enable `basis_points::BasisPoints` support
 - `brine-fp`: enable `brine_fp::{UnsignedNumeric, SignedNumeric}` support
 - `anchor`: convert `SafeMathError` into Anchor `ProgramError` / `Error`

@@ -10,7 +10,6 @@ documentation = "https://docs.rs/solana-math"
 readme = "README.md"
 keywords = ["solana", "math", "checked", "overflow"]
 categories = ["cryptography::cryptocurrencies", "mathematics"]
-rust-version = "1.85"
 include = ["src/**/*", "Cargo.toml", "README.md", "LICENSE*", "CHANGELOG.md"]
 
 [features]
@@ -30,7 +29,7 @@ i128 = []
 std = ["thiserror/std"]
 debug = ["std"]
 decimal = ["dep:rust_decimal"]
-fix = ["dep:hylo-fix"]
+fix = ["dep:fix", "dep:num-traits"]
 basis-points = ["dep:basis-points"]
 brine-fp = ["dep:brine-fp"]
 anchor = ["std", "dep:anchor-lang"]
@@ -38,7 +37,8 @@ quasar = ["dep:quasar-lang", "dep:zeropod"]
 
 [dependencies]
 anchor-lang = { workspace = true, optional = true }
-hylo-fix = { workspace = true, optional = true }
+fix = { workspace = true, optional = true }
+num-traits = { workspace = true, optional = true }
 rust_decimal = { workspace = true, optional = true }
 basis-points = { workspace = true, optional = true }
 brine-fp = { workspace = true, optional = true }

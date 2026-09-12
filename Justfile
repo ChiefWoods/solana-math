@@ -6,24 +6,24 @@ default:
 workspace_flags := "--workspace --all-features --locked"
 
 build:
-    cargo build {{workspace_flags}}
+    cargo +nightly build {{workspace_flags}}
 
 test:
-    cargo test {{workspace_flags}}
+    cargo +nightly test {{workspace_flags}}
 
 check:
-    cargo check {{workspace_flags}}
+    cargo +nightly check {{workspace_flags}}
 
 clippy:
-    cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+    cargo +nightly clippy --workspace --all-targets --all-features --locked -- -D warnings
 
 # Format all Rust sources (use `cargo fmt --all -- --check` in CI / pre-commit).
 fmt:
-    cargo fmt --all
+    cargo +nightly fmt --all
 
 doc:
-    cargo clean --doc
-    cargo doc --workspace --no-deps --all-features --open
+    cargo +nightly clean --doc
+    cargo +nightly doc --workspace --no-deps --all-features --open
 
 # --- cargo-changeset (install: cargo install cargo-changeset) ---
 # Flow: just changeset → just version → commit → just release <crate>
