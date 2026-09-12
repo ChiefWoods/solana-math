@@ -23,6 +23,7 @@ rust_decimal = { version = "1.42.0", features = ["maths"], default-features = fa
 ruint = { version = "=1.16.0", default-features = false }
 thiserror = { version = "2.0.18", default-features = false }
 husky-rs = { version = "0.3.3" }
+hylo-fix = { version = "0.8.0", default-features = false }
 zeropod = { version = "=0.3.3" }
 
 [workspace.metadata.changeset]
