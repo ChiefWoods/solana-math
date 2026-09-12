@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.1] - 2026-09-13
+### Changed
+
+- Replace `hylo-fix` with the no-std `fix` crate for checked fixed-point arithmetic, including its nightly-only 128-bit aliases and conversions.
+
 ## [0.4.0] - 2026-09-12
 ### Added
 
